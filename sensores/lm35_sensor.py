@@ -42,7 +42,7 @@ async def peripheral_task(sensor_id):
     while True:
         async with await aioble.advertise(
             _ADV_INTERVAL_MS,
-            name=f"LM35-{sensor_id}",
+            name=f"sensor-{sensor_id}",
             services=[_ENV_SENSE_UUID],
             appearance=_ADV_APPEARANCE_GENERIC_THERMOMETER,
         ) as connection:

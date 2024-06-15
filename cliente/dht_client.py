@@ -27,7 +27,7 @@ async def find_temp_hum_sensor():
     async with aioble.scan(5000, interval_us=30000, window_us=30000, active=True) as scanner:
         async for result in scanner:
             # See if it matches our name and the environmental sensing service.
-            if result.name() == "mpy-temp" and _ENV_SENSE_UUID in result.services():
+            if result.name() == "sensor-1" and _ENV_SENSE_UUID in result.services():
                 return result.device
     return None
 
