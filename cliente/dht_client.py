@@ -43,6 +43,9 @@ async def main():
     except asyncio.TimeoutError:
         print("Timeout during connection")
         return
+    except Exception as e:
+        print("Connection failed:", e)
+        return
 
     async with connection:
         try:
@@ -51,6 +54,9 @@ async def main():
             hum_characteristic = await temp_service.characteristic(_ENV_SENSE_HUM_UUID)
         except asyncio.TimeoutError:
             print("Timeout discovering services/characteristics")
+            return
+        except Exception as e:
+            print("Failed to discover services/characteristics:", e)
             return
 
         while True:
