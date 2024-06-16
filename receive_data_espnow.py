@@ -9,9 +9,12 @@ sta.disconnect()   # Because ESP8266 auto-connects to last Access Point
 e = espnow.ESPNow()
 e.active(True)
 
-while True:
-    host, msg = e.recv()
-    if msg:             # msg == None if timeout in recv()
-        print(host, msg)
-        if msg == b'end':
-            break
+#callback
+def recv_cb(e):
+    while True:  # Read out all messages waiting in the buffer
+        mac, msg = e.irecv(0)  # Don't wait if no messages left
+        if mac is None:
+            return
+        print(mac, msg)
+        
+e.irq(recv_cb)
