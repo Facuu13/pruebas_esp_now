@@ -4,18 +4,21 @@ import time
 import machine
 import dht
 
+
 dht_pin = machine.Pin(32)
 dht_sensor = dht.DHT11(dht_pin)
 
-# A WLAN interface must be active to send()/recv()
-sta = network.WLAN(network.STA_IF)  # Or network.AP_IF
-sta.active(True)
-sta.disconnect()      # For ESP8266
 
-e = espnow.ESPNow()
-e.active(True)
-peer = b'\x58\xCF\x79\xE3\x6A\x70'   # MAC address of peer's wifi interface
-e.add_peer(peer)      # Must add_peer() before send()
+def wifi_reset():   # Reset wifi to AP_IF off, STA_IF on and disconnected
+    sta = network.WLAN(network.STA_IF); sta.active(False)
+    ap = network.WLAN(network.AP_IF); ap.active(False)
+    sta.active(True)
+    while not sta.active():
+        time.sleep(0.1)
+    sta.disconnect()   # For ESP8266
+    while sta.isconnected():
+        time.sleep(0.1)
+    return sta, ap
 
 def send_sensor_data():
     # Medir temperatura y humedad
@@ -30,6 +33,12 @@ def send_sensor_data():
     e.send(peer, message)
     print("Mensaje enviado:", message)
 
+sta, ap = wifi_reset()   # Reset wifi to AP off, STA on and disconnected
+sta.config(channel=10)    #poner el canal del servidor
+peer = b'\x58\xCF\x79\xE3\x6A\x70'   # MAC address of peer's wifi interface
+e = espnow.ESPNow()
+e.active(True)
+e.add_peer(peer)      # Must add_peer() before send()
 
 send_sensor_data()
 
