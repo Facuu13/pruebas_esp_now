@@ -2,6 +2,10 @@ import network
 import espnow
 import time
 import machine
+import dht
+
+dht_pin = machine.Pin(32)
+dht_sensor = dht.DHT11(dht_pin)
 
 # A WLAN interface must be active to send()/recv()
 sta = network.WLAN(network.STA_IF)  # Or network.AP_IF
@@ -13,12 +17,22 @@ e.active(True)
 peer = b'\x58\xCF\x79\xE3\x6A\x70'   # MAC address of peer's wifi interface
 e.add_peer(peer)      # Must add_peer() before send()
 
-e.send(peer, "Starting...")
-for i in range(100):
-    e.send(peer, str(i), True)
-    time.sleep(0.2)
+def send_sensor_data():
+    # Medir temperatura y humedad
+    dht_sensor.measure()
+    temp = dht_sensor.temperature()
+    hum = dht_sensor.humidity()
     
-e.send(peer, b'end')
+    # Crear mensaje con la temperatura y la humedad
+    message = "Temp: {}C, Hum: {}%".format(temp, hum)
+    
+    # Enviar mensaje
+    e.send(peer, message)
+    print("Mensaje enviado:", message)
+
+
+send_sensor_data()
+
 
 # Configurar el ESP para despertar en 60 segundos y entrar en sueño profundo
 #print("Entrando en modo de sueño profundo por 60 segundos...")
