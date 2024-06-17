@@ -32,7 +32,13 @@ def recv_cb(e):
         print("Mensaje recibido de:", nombre)
         print("MAC:", mac)
         print("Mensaje:", msg)
+        procesar_mensaje(msg)  # Procesar el mensaje recibido
 
+def procesar_mensaje(msg):
+    # Decodificar el mensaje de bytearray a string
+    mensaje_decodificado = msg.decode('utf-8')
+    print("Mensaje decodificado:", mensaje_decodificado)
+    
 sta, ap = wifi_reset()
 sta.connect(ssid, password)
 while not sta.isconnected():
