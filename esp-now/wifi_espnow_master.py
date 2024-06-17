@@ -5,6 +5,12 @@ import time
 ssid = "quepasapatejode"   # Nombre de la red WiFi 
 password = "losvilla08"    # Contraseña de la red WiFi
 
+# Diccionario para mapear direcciones MAC a nombres
+mac_a_nombre = {
+    b'\x08\xb6\x1f\x81\x19 ': "sensor-DHT11",
+    # Agrega aquí otras direcciones MAC y sus nombres
+}
+
 def wifi_reset():
     sta = network.WLAN(network.STA_IF); sta.active(False)
     ap = network.WLAN(network.AP_IF); ap.active(False)
@@ -22,7 +28,10 @@ def recv_cb(e):
         mac, msg = e.irecv(0)   # No esperar si no hay mensajes
         if mac is None:   # Si no hay dirección MAC, salir del bucle
             return
-        print(mac, msg)   # Imprimir la dirección MAC y el mensaje recibido
+        nombre = mac_a_nombre.get(mac, "desconocido")
+        print("Mensaje recibido de:", nombre)
+        print("MAC:", mac)
+        print("Mensaje:", msg)
 
 sta, ap = wifi_reset()
 sta.connect(ssid, password)
