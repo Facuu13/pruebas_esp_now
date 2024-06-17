@@ -1,2 +1,4 @@
 esp32c3 del trabajo: 58:cf:79:e3:6a:70
 esp32 mio: 08:b6:1f:81:19:20
+
+placa_1: 30:30:f9:ed:d0:e4

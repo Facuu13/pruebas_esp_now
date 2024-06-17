@@ -8,6 +8,7 @@ password = "losvilla08"    # Contraseña de la red WiFi
 # Diccionario para mapear direcciones MAC a nombres
 mac_a_nombre = {
     b'\x08\xb6\x1f\x81\x19 ': "sensor-DHT11",
+    b'00\xf9\xed\xd0\xe4' : "Placa-1",
     # Agrega aquí otras direcciones MAC y sus nombres
 }
 
