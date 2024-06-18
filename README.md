@@ -1,1 +1,1 @@
-Primeras pruebas de firmware para la red de sensores BLE
+Primeras pruebas de firmware para la red de sensores ESPN-NOW
