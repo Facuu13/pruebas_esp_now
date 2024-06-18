@@ -1,9 +1,14 @@
 import network
 import espnow
 import time
+from umqtt.simple import MQTTClient
 
 SSID = "quepasapatejode"   # Nombre de la red WiFi 
 PASSWORD = "losvilla08"    # Contraseña de la red WiFi
+# Configuración del cliente MQTT
+cliente_id = 'dispositivo1'
+mqtt_broker = '192.168.1.11'
+puerto = 1883
 
 # Diccionario para mapear direcciones MAC a nombres
 MAC_A_NOMBRE = {
@@ -58,8 +63,25 @@ def conectar_wifi(ssid,password):
 def activar_espNow():
     e = espnow.ESPNow()
     e.active(True)
-    return e
+    # Verificación de activación
+    if e.active():
+        print("Se activo ESP-NOW")
+        return e
+    else:
+        # Manejar el caso en el que la activación falló
+        raise RuntimeError("No se pudo activar ESP-NOW")
 
+def conectar_mqtt(cliente_id, mqtt_broker, puerto):
+    cliente = MQTTClient(cliente_id, mqtt_broker, port=puerto)
+    while True:
+        try:
+            cliente.connect()
+            print("Conectado al broker MQTT")
+            break
+        except Exception as e:
+            print(f"Error al conectar al broker MQTT: {e}")
+            time.sleep(5)  # Espera 5 segundos antes de reintentar
+    return cliente
 
 sta, ap = wifi_reset()
 
@@ -69,3 +91,9 @@ e = activar_espNow()
 
 # Asignar la función de callback a ESP-NOW
 e.irq(recv_cb)   # Establecer la función recv_cb como la función de callback para manejar los datos recibidos
+
+cliente = conectar_mqtt(cliente_id, mqtt_broker, puerto)
+
+#topic_ejemplo = b'test/espnow'
+
+#cliente.publish(topic_ejemplo, "Hola desde ESP-NOW")
