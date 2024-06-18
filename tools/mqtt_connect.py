@@ -1,8 +1,6 @@
 from umqtt.simple import MQTTClient
 import time
 import network
-import machine
-import ujson
 
 ssid = "quepasapatejode"
 password = "losvilla08"
@@ -22,11 +20,14 @@ print("Dirección IP:", s.ifconfig()[0])
 
 def conectar_mqtt(cliente_id, mqtt_broker, puerto):
     cliente = MQTTClient(cliente_id, mqtt_broker, port=puerto)
-    try:
-        cliente.connect()
-        print("Conectado al broker MQTT")
-    except Exception as e:
-        print(f"Error al conectar al broker MQTT: {e}")
+    while True:
+        try:
+            cliente.connect()
+            print("Conectado al broker MQTT")
+            break
+        except Exception as e:
+            print(f"Error al conectar al broker MQTT: {e}")
+            time.sleep(5)  # Espera 5 segundos antes de reintentar
     return cliente
 
 cliente = conectar_mqtt(cliente_id, mqtt_broker, puerto)
