@@ -17,8 +17,8 @@ MAC_A_NOMBRE = {
         "topics": ["sensor/dht11/temp", "sensor/dht11/hum"]
     },
     b'00\xf9\xed\xd0\xe4': {
-        "nombre": "sensor-Analogic", 
-        "topics": ["sensor/analogic"]
+        "nombre": "sensor-LM35", 
+        "topics": ["sensor/lm35"]
     },
     # Agrega aquí otras direcciones MAC y sus nombres, temas y tipos de datos
 }
