@@ -1,17 +1,19 @@
 import time
 import machine
-from network_espnow import wifi_reset, setup_espnow
+from network_espnow import SensorBase
 
-peer = b'\x58\xCF\x79\xE3\x6A\x70'   # MAC address of peer's wifi interface
+class SensorLM35(SensorBase):
+    def __init__(self, peer_mac):
+        super().__init__(peer_mac)
 
-sta, ap = wifi_reset()
-sta.config(channel=9)
-e = setup_espnow(peer)
+    def send_sensor_data(self):
+        for i in range(100):
+            self.e.send(self.peer_mac, str(i))
+            print("Mensaje enviado:", i)
+            time.sleep(2)
 
-def send_sensor_data():
-    for i in range(100):
-        e.send(peer, str(i))
-        print("Mensaje enviado:", i)
-        time.sleep(2)
+# from sensor_lm35 import SensorLM35
 
-send_sensor_data()
+# peer = b'\x58\xCF\x79\xE3\x6A\x70'  # MAC address of peer's wifi interface
+# sensor = SensorLM35(peer)
+# sensor.send_sensor_data()  # Solo llama a send_sensor_data una vez
