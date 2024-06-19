@@ -20,7 +20,7 @@ MAC_A_NOMBRE = {
         "nombre": "sensor-LM35", 
         "topics": ["sensor/lm35"]
     },
-    # Agrega aquí otras direcciones MAC y sus nombres, temas y tipos de datos
+    # Agrega aquí otras direcciones MAC, sus nombres y topics
 }
 
 def wifi_reset():
