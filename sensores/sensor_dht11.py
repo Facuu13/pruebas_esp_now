@@ -26,15 +26,15 @@ def send_sensor_data():
     temp = dht_sensor.temperature()
     hum = dht_sensor.humidity()
     
-    # Crear mensaje con la temperatura y la humedad
-    message = "Temp: {}C, Hum: {}%".format(temp, hum)
+    # Crear mensaje con la temperatura y la humedad en el formato "temp;hum"
+    message = "{};{}".format(temp, hum)
     
     # Enviar mensaje
     e.send(peer, message)
     print("Mensaje enviado:", message)
 
 sta, ap = wifi_reset()   # Reset wifi to AP off, STA on and disconnected
-sta.config(channel=10)    #poner el canal del servidor
+sta.config(channel=9)    #poner el canal del servidor
 peer = b'\x58\xCF\x79\xE3\x6A\x70'   # MAC address of peer's wifi interface
 e = espnow.ESPNow()
 e.active(True)
