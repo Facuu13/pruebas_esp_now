@@ -12,9 +12,9 @@ puerto = 1883
 
 # Diccionario para mapear direcciones MAC a nombres
 MAC_A_NOMBRE = {
-    b'\x08\xb6\x1f\x81\x19 ': "sensor-DHT11",
-    b'00\xf9\xed\xd0\xe4' : "Placa-1",
-    # Agrega aquí otras direcciones MAC y sus nombres
+    b'\x08\xb6\x1f\x81\x19 ': {"nombre": "sensor-DHT11", "topic": "sensor/dht11"},
+    b'00\xf9\xed\xd0\xe4' : {"nombre": "sensor-Analogic", "topic": "sensor/analogic"},
+    # Agrega aquí otras direcciones MAC y sus nombres, temas y tipos de datos
 }
 
 def wifi_reset():
@@ -34,16 +34,18 @@ def recv_cb(e):
         mac, msg = e.irecv(0)   # No esperar si no hay mensajes
         if mac is None:   # Si no hay dirección MAC, salir del bucle
             return
-        nombre = MAC_A_NOMBRE.get(mac, "desconocido")
-        print("Mensaje recibido de:", nombre)
+        data = MAC_A_NOMBRE.get(mac, {"nombre": "desconocido", "topic": "unknown/topic"})
+        print("Mensaje recibido de:", data["nombre"])
         print("MAC:", mac)
         print("Mensaje:", msg)
-        procesar_mensaje(msg)  # Procesar el mensaje recibido
+        proccess_send_msg(data,msg)  # Procesar el mensaje recibido
 
-def procesar_mensaje(msg):
+def proccess_send_msg(data,msg):
     # Decodificar el mensaje de bytearray a string
     mensaje_decodificado = msg.decode('utf-8')
     print("Mensaje decodificado:", mensaje_decodificado)
+    # Publicar el mensaje en el topic correspondiente en el broker MQTT
+    cliente.publish(data["topic"], mensaje_decodificado)
 
 def conectar_wifi(ssid,password):
     sta = network.WLAN(network.STA_IF)

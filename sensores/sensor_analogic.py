@@ -21,9 +21,10 @@ def send_sensor_data():
     # Enviar mensaje
         e.send(peer, str(i))
         print("Mensaje enviado:", i)
+        time.sleep(2)
 
 sta, ap = wifi_reset()   # Reset wifi to AP off, STA on and disconnected
-sta.config(channel=10)    #poner el canal del servidor
+sta.config(channel=9)    #poner el canal del servidor
 peer = b'\x58\xCF\x79\xE3\x6A\x70'   # MAC address of peer's wifi interface
 e = espnow.ESPNow()
 e.active(True)
