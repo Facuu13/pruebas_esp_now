@@ -47,19 +47,17 @@ def recv_cb(e):
         proccess_send_msg(data,msg)  # Procesar el mensaje recibido
 
 def proccess_send_msg(data,msg):
-    # Decodificar el mensaje de bytearray a string
-    mensaje_decodificado = msg.decode('utf-8')
-    print("Mensaje decodificado:", mensaje_decodificado)
-    
-    if data["nombre"] == "sensor-DHT11":
-        try:
+    try:
+        mensaje_decodificado = msg.decode('utf-8')
+        print("Mensaje decodificado:", mensaje_decodificado)
+        if data["nombre"] == "sensor-DHT11":
             temp, hum = mensaje_decodificado.split(';')
             cliente.publish(data["topics"][0], temp)
             cliente.publish(data["topics"][1], hum)
-        except ValueError:
-            print("Error al procesar el mensaje del sensor DHT11")
-    else:
-        cliente.publish(data["topics"][0], mensaje_decodificado)
+        else:
+            cliente.publish(data["topics"][0], mensaje_decodificado)
+    except Exception as e:
+        print(f"Error al procesar el mensaje: {e}")
 
 def conectar_wifi(ssid,password):
     sta = network.WLAN(network.STA_IF)
