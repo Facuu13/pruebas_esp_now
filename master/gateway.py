@@ -4,75 +4,85 @@ import time
 import json
 from umqtt.simple import MQTTClient
 
-SSID = "quepasapatejode"   # Nombre de la red WiFi 
-PASSWORD = "losvilla08"    # Contraseña de la red WiFi
-# Configuración del cliente MQTT
+SSID = "quepasapatejode"
+PASSWORD = "losvilla08"
 cliente_id = 'dispositivo1'
 mqtt_broker = '192.168.1.11'
 puerto = 1883
 
-
 def wifi_reset():
-    sta = network.WLAN(network.STA_IF); sta.active(False)
-    ap = network.WLAN(network.AP_IF); ap.active(False)
-    sta.active(True)    # Activar el modo estación
-    while not sta.active():   
+    """
+    Resetea las conexiones WiFi y activa el modo estación.
+    """
+    sta = network.WLAN(network.STA_IF)
+    sta.active(False)
+    ap = network.WLAN(network.AP_IF)
+    ap.active(False)
+    sta.active(True)
+    while not sta.active():
         time.sleep(0.1)
-    sta.disconnect()   
-    while sta.isconnected():   # Esperar hasta que se desconecte de cualquier red WiFi anterior
+    sta.disconnect()
+    while sta.isconnected():
         time.sleep(0.1)
-    return sta, ap   # Devolver los objetos de estación y punto de acceso
+    return sta, ap
 
-# Función de callback para recibir datos
+def procesar_mensaje(mac, msg):
+    """
+    Procesa el mensaje recibido, convirtiéndolo en un formato adecuado y publicándolo en MQTT.
+    """
+    try:
+        data = json.loads(msg)
+        topic = data.get("topic")
+        value = data.get("value")
+        if topic and value is not None:
+            new_mac = mac.hex()
+            new_topic = f"{new_mac}/{topic}"
+            print("Topic_general:", new_topic)
+            print("Value:", value)
+            cliente.publish(new_topic, str(value))
+    except Exception as ex:
+        print("Error procesando el mensaje:", ex)
+
 def recv_cb(e):
-    while True:    # Leer todos los mensajes que esperan en el búfer
-        mac, msg = e.irecv(0)   # No esperar si no hay mensajes
-        if mac is None:   # Si no hay dirección MAC, salir del bucle
+    """
+    Callback para recibir datos ESP-NOW.
+    """
+    while True:
+        mac, msg = e.irecv(0)
+        if mac is None:
             return
-        try:
-            data = json.loads(msg)
-            topic = data.get("topic")
-            value = data.get("value")
-            if topic and value is not None:
-                print("MAC:", mac)
-                print("Topic:", topic)
-                print("Value:", value)
-                #cliente.publish(topic, str(value))
-        except Exception as ex:
-            print("Error procesando el mensaje:", ex)
+        procesar_mensaje(mac, msg)
 
-# MAC: b'\x08\xb6\x1f\x81\x19 '
-# Topic: sensor/temp
-# Value: 6
-
-
-def conectar_wifi(ssid,password):
+def conectar_wifi(ssid, password):
+    """
+    Conecta a la red WiFi especificada.
+    """
     sta = network.WLAN(network.STA_IF)
     sta.connect(ssid, password)
-    
     while not sta.isconnected():
         time.sleep(0.1)
-    
     print("Conectado a:", ssid)
     print("Dirección IP:", sta.ifconfig()[0])
-    
-    sta.config(pm=sta.PM_NONE)   # Deshabilitar el ahorro de energía después de la conexión
-    print("Proxy corriendo en el canal:", sta.config("channel")) # Imprimir el canal en el que se está ejecutando
-    
+    sta.config(pm=sta.PM_NONE)
+    print("Proxy corriendo en el canal:", sta.config("channel"))
     return sta
 
 def activar_espNow():
+    """
+    Activa ESP-NOW.
+    """
     e = espnow.ESPNow()
     e.active(True)
-    # Verificación de activación
     if e.active():
         print("Se activo ESP-NOW")
         return e
     else:
-        # Manejar el caso en el que la activación falló
         raise RuntimeError("No se pudo activar ESP-NOW")
 
 def conectar_mqtt(cliente_id, mqtt_broker, puerto):
+    """
+    Conecta al broker MQTT.
+    """
     cliente = MQTTClient(cliente_id, mqtt_broker, port=puerto)
     while True:
         try:
@@ -81,33 +91,12 @@ def conectar_mqtt(cliente_id, mqtt_broker, puerto):
             break
         except Exception as e:
             print(f"Error al conectar al broker MQTT: {e}")
-            time.sleep(5)  # Espera 5 segundos antes de reintentar
+            time.sleep(5)
     return cliente
 
+# Inicialización
 sta, ap = wifi_reset()
-
-sta = conectar_wifi(SSID,PASSWORD)  
-
+sta = conectar_wifi(SSID, PASSWORD)
 e = activar_espNow()
-
-# Asignar la función de callback a ESP-NOW
-e.irq(recv_cb)   # Establecer la función recv_cb como la función de callback para manejar los datos recibidos
-
+e.irq(recv_cb)
 cliente = conectar_mqtt(cliente_id, mqtt_broker, puerto)
-
-#topic_ejemplo = b'test/espnow'
-
-#cliente.publish(topic_ejemplo, "Hola desde ESP-NOW")
-
-# def proccess_send_msg(data,msg):
-#     try:
-#         mensaje_decodificado = msg.decode('utf-8')
-#         print("Mensaje decodificado:", mensaje_decodificado)
-#         if data["nombre"] == "sensor-DHT11":
-#             temp, hum = mensaje_decodificado.split(';')
-#             cliente.publish(data["topics"][0], temp)
-#             cliente.publish(data["topics"][1], hum)
-#         else:
-#             cliente.publish(data["topics"][0], mensaje_decodificado)
-#     except Exception as e:
-#         print(f"Error al procesar el mensaje: {e}")
