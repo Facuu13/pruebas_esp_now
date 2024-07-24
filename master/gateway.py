@@ -81,22 +81,27 @@ def activar_espNow():
 
 def conectar_mqtt(cliente_id, mqtt_broker, puerto):
     """
-    Conecta al broker MQTT.
+    Conecta al broker
     """
     cliente = MQTTClient(cliente_id, mqtt_broker, port=puerto)
-    while True:
+    max_intentos=5
+    intentos = 0
+    while intentos < max_intentos:
         try:
             cliente.connect()
             print("Conectado al broker MQTT")
-            break
+            return cliente
         except Exception as e:
+            intentos += 1
             print(f"Error al conectar al broker MQTT: {e}")
+            print(f"Intento {intentos}/{max_intentos}")
             time.sleep(5)
-    return cliente
+    raise RuntimeError(f"No se pudo conectar al broker MQTT después de {max_intentos} intentos")
 
 # Inicialización
 sta, ap = wifi_reset()
 sta = conectar_wifi(SSID, PASSWORD)
+cliente = conectar_mqtt(cliente_id, mqtt_broker, puerto)
 e = activar_espNow()
 e.irq(recv_cb)
-cliente = conectar_mqtt(cliente_id, mqtt_broker, puerto)
+
