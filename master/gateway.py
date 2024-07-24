@@ -10,18 +10,6 @@ cliente_id = 'dispositivo1'
 mqtt_broker = '192.168.1.11'
 puerto = 1883
 
-# Diccionario para mapear direcciones MAC a nombres
-MAC_A_NOMBRE = {
-    b'\x08\xb6\x1f\x81\x19 ': {
-        "nombre": "sensor-DHT11", 
-        "topics": ["sensor/dht11/temp", "sensor/dht11/hum"]
-    },
-    b'00\xf9\xed\xd0\xe4': {
-        "nombre": "sensor-LM35", 
-        "topics": ["sensor/lm35"]
-    },
-    # Agrega aquí otras direcciones MAC, sus nombres y topics
-}
 
 def wifi_reset():
     sta = network.WLAN(network.STA_IF); sta.active(False)
@@ -40,24 +28,9 @@ def recv_cb(e):
         mac, msg = e.irecv(0)   # No esperar si no hay mensajes
         if mac is None:   # Si no hay dirección MAC, salir del bucle
             return
-        data = MAC_A_NOMBRE.get(mac, {"nombre": "desconocido", "topic": "unknown/topic"})
-        print("Mensaje recibido de:", data["nombre"])
         print("MAC:", mac)
         print("Mensaje:", msg)
-        proccess_send_msg(data,msg)  # Procesar el mensaje recibido
 
-def proccess_send_msg(data,msg):
-    try:
-        mensaje_decodificado = msg.decode('utf-8')
-        print("Mensaje decodificado:", mensaje_decodificado)
-        if data["nombre"] == "sensor-DHT11":
-            temp, hum = mensaje_decodificado.split(';')
-            cliente.publish(data["topics"][0], temp)
-            cliente.publish(data["topics"][1], hum)
-        else:
-            cliente.publish(data["topics"][0], mensaje_decodificado)
-    except Exception as e:
-        print(f"Error al procesar el mensaje: {e}")
 
 def conectar_wifi(ssid,password):
     sta = network.WLAN(network.STA_IF)
@@ -111,3 +84,16 @@ cliente = conectar_mqtt(cliente_id, mqtt_broker, puerto)
 #topic_ejemplo = b'test/espnow'
 
 #cliente.publish(topic_ejemplo, "Hola desde ESP-NOW")
+
+# def proccess_send_msg(data,msg):
+#     try:
+#         mensaje_decodificado = msg.decode('utf-8')
+#         print("Mensaje decodificado:", mensaje_decodificado)
+#         if data["nombre"] == "sensor-DHT11":
+#             temp, hum = mensaje_decodificado.split(';')
+#             cliente.publish(data["topics"][0], temp)
+#             cliente.publish(data["topics"][1], hum)
+#         else:
+#             cliente.publish(data["topics"][0], mensaje_decodificado)
+#     except Exception as e:
+#         print(f"Error al procesar el mensaje: {e}")

@@ -1,4 +1,4 @@
-esp32c3 del trabajo: 58:cf:79:e3:6a:70
-esp32 mio: 08:b6:1f:81:19:20
+esp32c3 del trabajo: 58:cf:79:e3:6a:70 , b'\x58\xCF\x79\xE3\x6A\x70' 
+esp32 mio: 08:b6:1f:81:19:20 , b'\x08\xb6\x1f\x81\x19 '
 
-placa_1: 30:30:f9:ed:d0:e4
+placa_1: 30:30:f9:ed:d0:e4, b'00\xf9\xed\xd0\xe4'

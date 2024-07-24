@@ -6,7 +6,7 @@ class SensorBase:
     def __init__(self, peer_mac):
         self.peer_mac = peer_mac
         self.sta, self.ap = self.wifi_reset()
-        self.sta.config(channel=9)
+        self.sta.config(channel=10)
         self.e = self.setup_espnow(peer_mac)
 
     def wifi_reset(self):

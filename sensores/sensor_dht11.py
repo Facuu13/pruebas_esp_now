@@ -28,7 +28,6 @@ class SensorDHT11(SensorBase):
 # sensor.send_sensor_data()  # Solo llama a send_sensor_data una vez
 
 
-
 # Configurar el ESP para despertar en 60 segundos y entrar en sueño profundo
 #print("Entrando en modo de sueño profundo por 60 segundos...")
 #machine.deepsleep(6000)

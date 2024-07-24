@@ -17,3 +17,10 @@ class SensorLM35(SensorBase):
 # peer = b'\x58\xCF\x79\xE3\x6A\x70'  # MAC address of peer's wifi interface
 # sensor = SensorLM35(peer)
 # sensor.send_sensor_data()  # Solo llama a send_sensor_data una vez
+
+#enviar dato en forma de struct topic y dato
+
+#por ahora no filtrar
+
+#gateway llevar lista de mac conocidas
+#cuando llegue una mac desconocida preguntar si queremos agregarlo o no
