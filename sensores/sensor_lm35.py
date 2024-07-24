@@ -1,5 +1,6 @@
 import time
 import machine
+import json
 from network_espnow import SensorBase
 
 class SensorLM35(SensorBase):
@@ -8,8 +9,13 @@ class SensorLM35(SensorBase):
 
     def send_sensor_data(self):
         for i in range(100):
-            self.e.send(self.peer_mac, str(i))
-            print("Mensaje enviado:", i)
+            data = {
+                "topic": "sensor/temp",
+                "value": i
+            }
+            data_str = json.dumps(data)
+            self.e.send(self.peer_mac, data_str)
+            print("Mensaje enviado:", data_str)
             time.sleep(2)
 
 # from sensor_lm35 import SensorLM35

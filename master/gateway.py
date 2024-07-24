@@ -1,6 +1,7 @@
 import network
 import espnow
 import time
+import json
 from umqtt.simple import MQTTClient
 
 SSID = "quepasapatejode"   # Nombre de la red WiFi 
@@ -28,8 +29,21 @@ def recv_cb(e):
         mac, msg = e.irecv(0)   # No esperar si no hay mensajes
         if mac is None:   # Si no hay dirección MAC, salir del bucle
             return
-        print("MAC:", mac)
-        print("Mensaje:", msg)
+        try:
+            data = json.loads(msg)
+            topic = data.get("topic")
+            value = data.get("value")
+            if topic and value is not None:
+                print("MAC:", mac)
+                print("Topic:", topic)
+                print("Value:", value)
+                #cliente.publish(topic, str(value))
+        except Exception as ex:
+            print("Error procesando el mensaje:", ex)
+
+# MAC: b'\x08\xb6\x1f\x81\x19 '
+# Topic: sensor/temp
+# Value: 6
 
 
 def conectar_wifi(ssid,password):
