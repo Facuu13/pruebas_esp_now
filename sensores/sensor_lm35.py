@@ -4,8 +4,8 @@ import json
 from network_espnow import SensorBase
 
 class SensorLM35(SensorBase):
-    def __init__(self, peer_mac):
-        super().__init__(peer_mac)
+    def __init__(self):
+        super().__init__()
 
     def send_sensor_data(self):
         for i in range(100):
@@ -20,8 +20,7 @@ class SensorLM35(SensorBase):
 
 # from sensor_lm35 import SensorLM35
 
-# peer = b'\x58\xCF\x79\xE3\x6A\x70'  # MAC address of peer's wifi interface
-# sensor = SensorLM35(peer)
+# sensor = SensorLM35()
 # sensor.send_sensor_data()  # Solo llama a send_sensor_data una vez
 
 #enviar dato en forma de struct topic y dato

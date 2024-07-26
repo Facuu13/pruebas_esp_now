@@ -3,11 +3,11 @@ import espnow
 import time
 
 class SensorBase:
-    def __init__(self, peer_mac):
-        self.peer_mac = peer_mac
+    def __init__(self):
+        self.peer_mac = b'\xff' * 6
         self.sta, self.ap = self.wifi_reset()
         self.sta.config(channel=10)
-        self.e = self.setup_espnow(peer_mac)
+        self.e = self.setup_espnow(self.peer_mac)
 
     def wifi_reset(self):
         sta = network.WLAN(network.STA_IF)
