@@ -6,7 +6,8 @@ from network_espnow import SensorBase
 class SensorHTU21(SensorBase):
     def __init__(self):
         super().__init__()
-        self.i2c = I2C(0, scl=Pin(22), sda=Pin(21), freq=100000)
+        #self.i2c = I2C(0, scl=Pin(22), sda=Pin(21), freq=100000) #ESP32
+        self.i2c = I2C(0, scl=Pin(4), sda=Pin(5), freq=100000) #ESP32M1
         self.addr = 0x40 # Dirección del dispositivo HTU21 en el bus I2C
 
     def _read(self, cmd):
