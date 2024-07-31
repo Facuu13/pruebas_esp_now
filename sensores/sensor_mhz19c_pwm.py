@@ -6,7 +6,8 @@ from network_espnow import SensorBase
 class SensorMHZ19PWM(SensorBase):
     def __init__(self):
         super().__init__()
-        self.pwm_pin = Pin(4, Pin.IN)
+        #self.pwm_pin = Pin(4, Pin.IN) #ESP32
+        self.pwm_pin = Pin(3, Pin.IN) #ESP32C3M1
     
     def read_co2_pwm(self):
         try:

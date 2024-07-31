@@ -7,7 +7,8 @@ class SensorLM35(SensorBase):
     def __init__(self):
         super().__init__()
         # Configurar el pin GPIO34 como entrada analógica
-        self.adc = ADC(Pin(34))
+        #self.adc = ADC(Pin(34)) #ESP32
+        self.adc = ADC(Pin(0)) #ESP32C3M1
         self.adc.atten(ADC.ATTN_11DB)  # Configurar el rango de atenuación (0-3.3V)
         self.adc.width(ADC.WIDTH_12BIT)  # Configurar la resolución (12 bits: 0-4095)
 
