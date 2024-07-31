@@ -8,7 +8,8 @@ class SensorMHZ19UART(SensorBase):
         super().__init__()
         self.buf=b'\xFF\x01\x86\x00\x00\x00\x00\x00\x79'
         # Configura los pines y la UART
-        self.uart = UART(2, baudrate=9600, tx=17, rx=16)
+        #self.uart = UART(2, baudrate=9600, tx=17, rx=16) #ESP32 WROM 32
+        self.uart = UART(1, baudrate=9600, tx=18, rx=19) #ESP32C3M1
     
     def read_mhz19c(self):
         # Envia el comando de lectura del sensor
