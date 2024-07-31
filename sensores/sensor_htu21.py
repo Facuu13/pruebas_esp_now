@@ -32,22 +32,29 @@ class SensorHTU21(SensorBase):
     
     def send_sensor_data(self):
         hum = self.humidity()
-        data = {
-            "topic": "sensor/hum",
-            "value": hum
-        }
-        data_str = json.dumps(data)
-        self.e.send(self.peer_mac, data_str)
-        print("Mensaje enviado:", data_str)
-        time.sleep(1)
+        time.sleep(0.1)
         temp = self.temperature()
-        data = {
-            "topic": "sensor/temp",
-            "value": temp
-        }
-        data_str = json.dumps(data)
-        self.e.send(self.peer_mac, data_str)
-        print("Mensaje enviado:", data_str)
+        if hum and temp is not None:
+            data = {
+                "topic": "sensor/hum",
+                "value": hum
+            }
+            data_str = json.dumps(data)
+            self.e.send(self.peer_mac, data_str)
+            print("Mensaje enviado:", data_str)
+            
+            time.sleep(1)
+            
+            data2 = {
+                "topic": "sensor/temp",
+                "value": temp
+            }
+            data2_str = json.dumps(data2)
+            self.e.send(self.peer_mac, data2_str)
+            print("Mensaje enviado:", data2_str)
+            
+        else:
+            print("Failed to read from sensor")
         
 # Ejemplo de uso
 # from sensor_htu21 import SensorHTU21
