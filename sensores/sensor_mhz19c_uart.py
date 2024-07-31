@@ -16,11 +16,15 @@ class SensorMHZ19(SensorBase):
         # Espera la respuesta del sensor
         time.sleep(0.1)
         if self.uart.any():
+            # Verifica que la longitud de la respuesta sea la esperada (9 bytes)
             response = self.uart.read(9)
             if len(response) == 9:
+                # Verifica que los primeros bytes de la respuesta sean correctos
                 if response[0] == 0xFF and response[1] == 0x86:
+                    # Calcula la concentración de CO2 a partir de los bytes 2 y 3
                     co2 = response[2] * 256 + response[3]
                     return co2 # nos devuelve en ppm
+        # Si la respuesta no es válida o no hay datos, retorna None
         return None
 
     def send_sensor_data(self):
