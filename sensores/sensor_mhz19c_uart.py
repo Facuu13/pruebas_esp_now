@@ -3,7 +3,7 @@ from machine import UART, Pin
 import json
 from network_espnow import SensorBase
 
-class SensorMHZ19(SensorBase):
+class SensorMHZ19UART(SensorBase):
     def __init__(self):
         super().__init__()
         self.buf=b'\xFF\x01\x86\x00\x00\x00\x00\x00\x79'
@@ -39,6 +39,6 @@ class SensorMHZ19(SensorBase):
         time.sleep(2)
             
 
-# from sensor_mhz19c_uart import SensorMHZ19
-#sensor = SensorMHZ19()
+# from sensor_mhz19c_uart import SensorMHZ19UART
+#sensor = SensorMHZ19UART()
 #sensor.send_sensor_data()
