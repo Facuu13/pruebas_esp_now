@@ -29,13 +29,16 @@ class SensorMHZ19UART(SensorBase):
 
     def send_sensor_data(self):
         co2_concentration = self.read_mhz19c()
-        data = {
-            "topic": "sensor/co2",
-            "value": co2_concentration
-        }
-        data_str = json.dumps(data)
-        self.e.send(self.peer_mac, data_str)
-        print("Mensaje enviado:", data_str)
+        if co2_concentration is not None:
+            data = {
+                "topic": "sensor/co2",
+                "value": co2_concentration
+            }
+            data_str = json.dumps(data)
+            self.e.send(self.peer_mac, data_str)
+            print("Mensaje enviado:", data_str)
+        else:
+            print("Failed to read from sensor")
         time.sleep(2)
             
 

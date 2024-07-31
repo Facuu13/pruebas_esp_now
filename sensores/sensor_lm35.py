@@ -22,13 +22,16 @@ class SensorLM35(SensorBase):
     
     def send_sensor_data(self):
         temp = self.read_temperature()
-        data = {
-                "topic": "sensor/temp",
-                "value": temp
-            }
-        data_str = json.dumps(data)
-        self.e.send(self.peer_mac, data_str)
-        print("Mensaje enviado:", data_str)
+        if temp is not None:
+            data = {
+                    "topic": "sensor/temp",
+                    "value": temp
+                }
+            data_str = json.dumps(data)
+            self.e.send(self.peer_mac, data_str)
+            print("Mensaje enviado:", data_str)
+        else:
+            print("Failed to read from sensor")
         time.sleep(2)
 
 # from sensor_lm35 import SensorLM35
