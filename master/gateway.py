@@ -9,6 +9,8 @@ PASSWORD = "losvilla08"
 cliente_id = 'dispositivo1'
 mqtt_broker = '192.168.1.11'
 puerto = 1883
+peer_mac = b'\xff' * 6
+mensaje_clave = json.dumps({"respuesta": "canal_correcto"})
 
 def wifi_reset():
     """
@@ -32,6 +34,7 @@ def procesar_mensaje(mac, msg):
     """
     try:
         data = json.loads(msg)
+        info = data.get("palabra_clave")
         topic = data.get("topic")
         value = data.get("value")
         if topic and value is not None:
@@ -40,6 +43,8 @@ def procesar_mensaje(mac, msg):
             print("Topic_general:", new_topic)
             print("Value:", value)
             cliente.publish(new_topic, str(value))
+        elif info == "buscar_canal":
+            e.send(peer_mac, mensaje_clave)
     except Exception as ex:
         print("Error procesando el mensaje:", ex)
 
@@ -73,6 +78,7 @@ def activar_espNow():
     """
     e = espnow.ESPNow()
     e.active(True)
+    e.add_peer(peer_mac)
     if e.active():
         print("Se activo ESP-NOW")
         return e
