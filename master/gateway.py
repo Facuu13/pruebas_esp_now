@@ -11,6 +11,7 @@ mqtt_broker = '192.168.1.11'
 puerto = 1883
 peer_mac = b'\xff' * 6
 mensaje_clave = json.dumps({"respuesta": "canal_correcto"})
+topic_prueba = b'sensor/+'
 
 def wifi_reset():
     """
@@ -104,6 +105,21 @@ def conectar_mqtt(cliente_id, mqtt_broker, puerto):
             time.sleep(5)
     raise RuntimeError(f"No se pudo conectar al broker MQTT después de {max_intentos} intentos")
 
+def mensaje_callback(topic, msg):
+    """
+    Callback para manejar los mensajes recibidos en los tópicos suscritos.
+    """
+    print("Mensaje recibido en el tópico {}: {}".format(topic, msg))
+    
+# Suscribirse a un topic para recibir mensajes
+def suscribir_topic(cliente, topic):
+    try:
+        cliente.set_callback(mensaje_callback)
+        cliente.subscribe(topic)
+        print("Suscripción exitosa al topic:", topic)
+    except Exception as e:
+        print(f"Error al suscribirse al topic: {e}")
+
 # Inicialización
 sta, ap = wifi_reset()
 sta = conectar_wifi(SSID, PASSWORD)
@@ -111,3 +127,11 @@ cliente = conectar_mqtt(cliente_id, mqtt_broker, puerto)
 e = activar_espNow()
 e.irq(recv_cb)
 
+suscribir_topic(cliente, topic_prueba)
+
+while True:
+    try:
+        cliente.check_msg()  # Revisa si hay mensajes nuevos
+        time.sleep(1)  # Espera un poco antes de la siguiente verificación
+    except Exception as e:
+        print(f"Error al recibir mensajes: {e}")
