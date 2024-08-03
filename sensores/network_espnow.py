@@ -14,6 +14,9 @@ class SensorBase:
         self.e.irq(self.recv_cb)
         
     def wifi_reset(self):
+        """
+        Reinicia la configuración WiFi.
+        """
         sta = network.WLAN(network.STA_IF)
         sta.active(False)
         ap = network.WLAN(network.AP_IF)
@@ -27,12 +30,18 @@ class SensorBase:
         return sta, ap
 
     def setup_espnow(self, peer_mac):
+        """
+        Configura ESP-NOW y añade el peer MAC.
+        """
         e = espnow.ESPNow()
         e.active(True)
         e.add_peer(peer_mac)
         return e
 
     def buscar_canal(self):
+        """
+        Busca el canal correcto enviando mensajes de prueba en cada canal.
+        """
         for canal in range(1, 14):  # Canales WiFi 1 a 13
             self.sta.config(channel=canal)
             mensaje = json.dumps({"palabra_clave": "buscar_canal"})
@@ -63,6 +72,9 @@ class SensorBase:
     
 
     def send_sensor_data(self):
+        """
+        Método abstracto que debe ser implementado por las subclases.
+        """
         raise NotImplementedError("Subclass must implement send_sensor_data()")
     
     def extraer_mac(self,topic):

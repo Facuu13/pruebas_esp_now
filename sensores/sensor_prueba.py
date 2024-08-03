@@ -1,5 +1,4 @@
 import time
-import machine
 from network_espnow import SensorBase
 import json
 
