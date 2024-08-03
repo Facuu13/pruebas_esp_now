@@ -133,24 +133,12 @@ class SensorBase:
         """
         if accion == "rele":
             self.controlar_rele(value)  # Controlar el relé basado en el valor recibido
-        elif accion == "mensaje":
-            self.procesar_mensaje_custom(value)  # Procesar mensaje personalizado
         else:
             print(f"Acción desconocida: {accion}")
 
     def controlar_rele(self, estado):
         """
-        Controla el relé (simulado) en base al estado proporcionado.
+        Método abstracto para controlar el relé que debe ser implementado por las subclases.
         """
-        if estado == "on":
-            print("Prendiendo Rele")
-        elif estado == "off":
-            print("Apangado rele")
-        else:
-            print("Valor incorrecto")
+        raise NotImplementedError("Subclass must implement controlar_rele()")
     
-    def procesar_mensaje_custom(self, valor):
-        """
-        Procesa un mensaje personalizado. (Ejemplo de implementación)
-        """
-        print(f"Mensaje personalizado recibido: {valor}")

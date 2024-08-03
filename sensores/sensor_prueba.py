@@ -16,6 +16,17 @@ class SensorPrueba(SensorBase):
             self.e.send(self.peer_mac, data_str)
             print("Mensaje enviado:", data_str)
             time.sleep(1)
+    
+    def controlar_rele(self, estado):
+        """
+        Controla el relé (simulado) en base al estado proporcionado.
+        """
+        if estado == "on":
+            print("Prendiendo Rele")
+        elif estado == "off":
+            print("Apangado rele")
+        else:
+            print("Valor incorrecto")
             
 # from sensor_prueba import SensorPrueba
 sensor = SensorPrueba()
