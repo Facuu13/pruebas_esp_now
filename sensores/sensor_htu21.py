@@ -1,7 +1,7 @@
 import time
 from machine import Pin, I2C
 import json
-from network_espnow import SensorBase
+from config.network_espnow import SensorBase
 
 class SensorHTU21(SensorBase):
     def __init__(self):

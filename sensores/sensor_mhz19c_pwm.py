@@ -1,7 +1,7 @@
 import time
 from machine import Pin, time_pulse_us
 import json
-from network_espnow import SensorBase
+from config.network_espnow import SensorBase
 
 class SensorMHZ19PWM(SensorBase):
     def __init__(self):

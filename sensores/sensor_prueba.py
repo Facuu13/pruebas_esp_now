@@ -1,5 +1,5 @@
 import time
-from network_espnow import SensorBase
+from config.network_espnow import SensorBase
 import json
 
 class SensorPrueba(SensorBase):

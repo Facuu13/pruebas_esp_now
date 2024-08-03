@@ -1,7 +1,7 @@
 import time
 from machine import ADC, Pin
 import json
-from network_espnow import SensorBase
+from config.network_espnow import SensorBase
 
 class SensorLM35(SensorBase):
     def __init__(self):
