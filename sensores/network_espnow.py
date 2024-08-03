@@ -8,7 +8,7 @@ class SensorBase:
     def __init__(self):
         self.peer_mac = b'\xff' * 6
         self.sta, self.ap = self.wifi_reset()
-        self.mac_propia = (self.sta.config('mac')).hex()
+        self.mac_propia = (self.sta.config('mac')).hex() #obtenemos la mac del chip
         self.e = self.setup_espnow(self.peer_mac)
         self.buscar_canal()
         self.e.irq(self.recv_cb)
@@ -85,10 +85,19 @@ class SensorBase:
         if match:
             return match.group(1)
         return None
+
+    def extraer_accion(self, topic):
+        """
+        Extrae la acción del topic que sigue a la MAC.
+        """
+        match = re.search(r'/sensor/[^/]+/([^/]+)$', topic)
+        if match:
+            return match.group(1)
+        return None
     
     def procesar_mensaje(self, mac, msg):
         """
-        Procesa el mensaje recibido, convirtiéndolo en un formato adecuado
+        Procesa el mensaje recibido, convirtiéndolo en un formato adecuado.
         """
         try:
             data = json.loads(msg)
@@ -97,15 +106,51 @@ class SensorBase:
             if topic and value is not None:
                 print("Topic_general:", topic)
                 print("Value:", value)
-                
-                # Extraer la mac usando la función auxiliar
+
+                # Extraer la mac 
                 identifier = self.extraer_mac(topic)
-                if identifier:
-                    print("Identificador extraído:", identifier)
-                if identifier == self.mac_propia:
-                    print("Son la misma MAC")
+                if identifier and self.validar_mac(identifier):
+                    accion = self.extraer_accion(topic)
+                    self.procesar_accion(accion, value)
             else:
                 print("No se pudo extraer el identificador del topic")
-        
+
         except Exception as ex:
             print("Error procesando el mensaje:", ex)
+
+    def validar_mac(self, identifier):
+        """
+        Valida si el identifier es igual a la mac_propia.
+        """
+        if identifier == self.mac_propia:
+            print("Son la misma MAC")
+            return True
+        return False
+
+    def procesar_accion(self, accion, value):
+        """
+        Procesa la acción extraída del topic.
+        """
+        if accion == "rele":
+            self.controlar_rele(value)  # Controlar el relé basado en el valor recibido
+        elif accion == "mensaje":
+            self.procesar_mensaje_custom(value)  # Procesar mensaje personalizado
+        else:
+            print(f"Acción desconocida: {accion}")
+
+    def controlar_rele(self, estado):
+        """
+        Controla el relé (simulado) en base al estado proporcionado.
+        """
+        if estado == "on":
+            print("Prendiendo Rele")
+        elif estado == "off":
+            print("Apangado rele")
+        else:
+            print("Valor incorrecto")
+    
+    def procesar_mensaje_custom(self, valor):
+        """
+        Procesa un mensaje personalizado. (Ejemplo de implementación)
+        """
+        print(f"Mensaje personalizado recibido: {valor}")
