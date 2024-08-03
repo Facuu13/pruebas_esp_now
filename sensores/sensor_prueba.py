@@ -2,6 +2,7 @@ import time
 import machine
 from network_espnow import SensorBase
 import json
+import re
 
 class SensorPrueba(SensorBase):
     def __init__(self):
@@ -18,6 +19,18 @@ class SensorPrueba(SensorBase):
             if topic and value is not None:
                 print("Topic_general:", topic)
                 print("Value:", value)
+                
+                #Esta expresión regular busca la parte del topic que sigue a /sensor/ 
+                # y está antes de la siguiente barra (/)
+                match = re.search(r'/sensor/([^/]+)(?:/|$)', topic)
+                if match:
+                    identifier = match.group(1)
+                    print("Identificador extraído:", identifier)
+                    if identifier == self.mac_propia:
+                        print("son las misma mac")
+                else:
+                    print("No se pudo extraer el identificador del topic")
+                    
         except Exception as ex:
             print("Error procesando el mensaje:", ex)
     
