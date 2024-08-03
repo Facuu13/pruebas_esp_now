@@ -1,6 +1,6 @@
-from wifi_config import WiFiConfig
-from espnow_config import ESPNowConfig
-from message_processor import MessageProcessor
+from .wifi_config import WiFiConfig
+from .espnow_config import ESPNowConfig
+from .message_processor import MessageProcessor
 
 class SensorBase:
     def __init__(self):
