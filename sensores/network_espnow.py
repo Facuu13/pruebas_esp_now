@@ -7,7 +7,7 @@ class SensorBase:
     def __init__(self):
         self.peer_mac = b'\xff' * 6
         self.sta, self.ap = self.wifi_reset()
-        #self.sta.config(channel=10)
+        self.mac_propia = (self.sta.config('mac')).hex()
         self.e = self.setup_espnow(self.peer_mac)
         self.buscar_canal()
         self.e.irq(self.recv_cb)
