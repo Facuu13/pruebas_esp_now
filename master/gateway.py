@@ -11,7 +11,7 @@ mqtt_broker = '192.168.1.11'
 puerto = 1883
 peer_mac = b'\xff' * 6
 mensaje_clave = json.dumps({"respuesta": "canal_correcto"})
-topic_prueba = b'sensor/+'
+topic_prueba = b'/sensor/+'
 
 def wifi_reset():
     """
