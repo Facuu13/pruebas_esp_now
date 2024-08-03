@@ -10,7 +10,8 @@ class SensorBase:
         #self.sta.config(channel=10)
         self.e = self.setup_espnow(self.peer_mac)
         self.buscar_canal()
-
+        self.e.irq(self.recv_cb)
+        
     def wifi_reset(self):
         sta = network.WLAN(network.STA_IF)
         sta.active(False)
@@ -49,5 +50,19 @@ class SensorBase:
                         print("Error procesando el mensaje de respuesta:", ex)
             time.sleep(0.1)
 
+    def recv_cb(self,e):
+        """
+        Callback para recibir datos ESP-NOW.
+        """
+        while True:
+            mac, msg = self.e.irecv(0)
+            if mac is None:
+                return
+            self.procesar_mensaje(mac, msg)
+    
+    def procesar_mensaje(self, mac, msg):
+        raise NotImplementedError("Subclass must implement procesar_mensaje()")
+        
+        
     def send_sensor_data(self):
         raise NotImplementedError("Subclass must implement send_sensor_data()")

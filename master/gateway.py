@@ -110,6 +110,13 @@ def mensaje_callback(topic, msg):
     Callback para manejar los mensajes recibidos en los tópicos suscritos.
     """
     print("Mensaje recibido en el tópico {}: {}".format(topic, msg))
+    data = {
+                    "topic": topic,
+                    "value": msg
+                }
+    data_str = json.dumps(data)
+    e.send(peer_mac, data_str)
+    print("Mensaje enviado:", data_str)
     
 # Suscribirse a un topic para recibir mensajes
 def suscribir_topic(cliente, topic):
