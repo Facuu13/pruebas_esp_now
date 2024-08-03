@@ -2,6 +2,7 @@ import network
 import espnow
 import time
 import json
+import re
 
 class SensorBase:
     def __init__(self):
@@ -60,9 +61,39 @@ class SensorBase:
                 return
             self.procesar_mensaje(mac, msg)
     
-    def procesar_mensaje(self, mac, msg):
-        raise NotImplementedError("Subclass must implement procesar_mensaje()")
-        
-        
+
     def send_sensor_data(self):
         raise NotImplementedError("Subclass must implement send_sensor_data()")
+    
+    def extraer_mac(self,topic):
+        """
+        Extrae el mac del topic que sigue a /sensor/
+        """
+        match = re.search(r'/sensor/([^/]+)(?:/|$)', topic)
+        if match:
+            return match.group(1)
+        return None
+    
+    def procesar_mensaje(self, mac, msg):
+        """
+        Procesa el mensaje recibido, convirtiéndolo en un formato adecuado
+        """
+        try:
+            data = json.loads(msg)
+            topic = data.get("topic")
+            value = data.get("value")
+            if topic and value is not None:
+                print("Topic_general:", topic)
+                print("Value:", value)
+                
+                # Extraer la mac usando la función auxiliar
+                identifier = self.extraer_mac(topic)
+                if identifier:
+                    print("Identificador extraído:", identifier)
+                if identifier == self.mac_propia:
+                    print("Son la misma MAC")
+            else:
+                print("No se pudo extraer el identificador del topic")
+        
+        except Exception as ex:
+            print("Error procesando el mensaje:", ex)
