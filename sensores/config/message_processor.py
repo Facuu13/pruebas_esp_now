@@ -17,7 +17,7 @@ class MessageProcessor:
         """
         Extrae la acción del topic que sigue a la MAC.
         """
-        match = re.search(r'/sensor/[^/]+/([^/]+)$', topic)
+        match = re.search(r'/sensor/[^/]+/([^/]+/[^/]+)$', topic)
         if match:
             return match.group(1)
         return None
@@ -63,7 +63,7 @@ class MessageProcessor:
         """
         Procesa la acción extraída del topic.
         """
-        if accion == "rele":
+        if accion == "rele/set":
             controlar_rele_callback(value)  # Controlar el relé basado en el valor recibido
         else:
             print(f"Acción desconocida: {accion}")
