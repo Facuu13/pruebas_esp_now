@@ -7,6 +7,7 @@ class SensorBase:
         self.peer_mac = b'\xff' * 6
         self.sta, self.ap = WiFiConfig.wifi_reset()
         self.mac_propia = (self.sta.config('mac')).hex()  # obtenemos la mac del chip
+        self.enable_sensor = True
         self.e = ESPNowConfig.setup_espnow(self.peer_mac)
         ESPNowConfig.buscar_canal(self.e, self.sta, self.peer_mac)
         self.e.irq(self.recv_cb)
@@ -19,7 +20,20 @@ class SensorBase:
             mac, msg = self.e.irecv(0)
             if mac is None:
                 return
-            MessageProcessor.procesar_mensaje(self.mac_propia, mac, msg, self.controlar_rele)
+            MessageProcessor.procesar_mensaje(self.mac_propia, mac, msg, self.controlar_rele,self.habilitar_sensor)
+
+    def habilitar_sensor(self, estado):
+        """
+        Habilita o deshabilita el sensor basado en el estado proporcionado.
+        """
+        if estado == "true":
+            print("Habilitando sensor")
+            self.enable_sensor = True
+        elif estado == "false":
+            print("Deshabilitando sensor")
+            self.enable_sensor = False
+        else:
+            print("Valor incorrecto para habilitar/deshabilitar el sensor")
 
     def send_sensor_data_encriptado(self):
         """
