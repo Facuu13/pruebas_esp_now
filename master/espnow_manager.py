@@ -9,6 +9,7 @@ class ESPNowManager:
         self.mensaje_clave = mensaje_clave
         self.e = self.activar_espNow()
         self.e.irq(self.recv_cb)
+        self.topic_discovery = "/discovery"
     
     def activar_espNow(self):
         e = espnow.ESPNow()
@@ -44,6 +45,9 @@ class ESPNowManager:
                 self.mqtt_client.publish(new_topic, str(value))
             elif info == "buscar_canal":
                 self.send(self.peer_mac, self.mensaje_clave)
+                print("Nuevo nodo detectado")
+                print("Nodo: ",mac.hex())
+                self.mqtt_client.publish(self.topic_discovery, str(mac.hex()))
         except Exception as ex:
             print("Error procesando el mensaje:", ex)
     

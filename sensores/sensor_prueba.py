@@ -28,10 +28,10 @@ class SensorPrueba(SensorBase):
         """
         Controla el relé (simulado) en base al estado proporcionado.
         """
-        if estado == "on":
+        if estado == "true":
             print("Prendiendo Rele")
             self.rele_state = True
-        elif estado == "off":
+        elif estado == "false":
             print("Apangado rele")
             self.rele_state = False
         else:
