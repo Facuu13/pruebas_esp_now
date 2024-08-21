@@ -21,7 +21,7 @@ class SensorBase:
                 return
             MessageProcessor.procesar_mensaje(self.mac_propia, mac, msg, self.controlar_rele)
 
-    def send_sensor_data(self):
+    def send_sensor_data_encriptado(self):
         """
         Método abstracto que debe ser implementado por las subclases.
         """

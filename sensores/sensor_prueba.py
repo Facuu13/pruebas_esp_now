@@ -7,8 +7,9 @@ class SensorPrueba(SensorBase):
         super().__init__()
         self.rele_state = False
 
-    def send_sensor_data(self):
+    def send_sensor_data_encriptado(self):
         data = {
+                "word" : "encriptado",
                 "topic": "sensor/prueba",
                 "value": 2
             }
@@ -17,6 +18,7 @@ class SensorPrueba(SensorBase):
         print("Mensaje enviado:", data_str)
         time.sleep(1)
         data2 = {
+                "word" : "encriptado",
                 "topic": "sensor/rele/state",
                 "value": self.rele_state
             }

@@ -37,7 +37,8 @@ class ESPNowManager:
             info = data.get("palabra_clave")
             topic = data.get("topic")
             value = data.get("value")
-            if topic and value is not None:
+            word = data.get("word")
+            if topic and value is not None and word == "encriptado":
                 new_mac = mac.hex()
                 new_topic = f"{new_mac}/{topic}"
                 print("Topic_general:", new_topic)
