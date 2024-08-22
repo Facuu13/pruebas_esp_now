@@ -40,9 +40,3 @@ class SensorLM35(SensorBase):
 # sensor = SensorLM35()
 # sensor.send_sensor_data()  # Solo llama a send_sensor_data una vez
 
-#enviar dato en forma de struct topic y dato
-
-#por ahora no filtrar
-
-#gateway llevar lista de mac conocidas
-#cuando llegue una mac desconocida preguntar si queremos agregarlo o no

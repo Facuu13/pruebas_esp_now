@@ -1,6 +1,7 @@
 import time
 from config.network_espnow import SensorBase
 import json
+import machine
 
 class SensorPrueba(SensorBase):
     def __init__(self):
@@ -56,4 +57,9 @@ class SensorPrueba(SensorBase):
 
 # from sensor_prueba import SensorPrueba
 sensor = SensorPrueba()
-# sensor.send_sensor_data()
+sensor.send_sensor_data_encriptado()
+
+print("entrando en modo sleep")
+# 10000 = 10 segundos
+sleep_time = 20000 # 20seg
+machine.deepsleep(sleep_time)
