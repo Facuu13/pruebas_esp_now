@@ -36,7 +36,7 @@ class MessageProcessor:
             return False
 
     @staticmethod
-    def procesar_mensaje(mac_propia, mac, msg, controlar_rele_callback,habilitar_sensor_callback):
+    def procesar_mensaje(mac_propia, mac, msg, acciones):
         """
         Procesa el mensaje recibido, convirtiéndolo en un formato adecuado.
         """
@@ -52,21 +52,15 @@ class MessageProcessor:
                 identifier = MessageProcessor.extraer_mac(topic)
                 if identifier and MessageProcessor.validar_mac(mac_propia, identifier):
                     accion = MessageProcessor.extraer_accion(topic)
-                    MessageProcessor.procesar_accion(accion, value, controlar_rele_callback,habilitar_sensor_callback)
+
+                    # Busca la función asociada a la acción en el diccionario
+                    if accion in acciones:
+                        acciones[accion](value)  # Llama a la función correspondiente
+                    else:
+                        print(f"Acción desconocida: {accion}")
             else:
                 print("No se pudo extraer el identificador del topic")
 
         except Exception as ex:
             print("Error procesando el mensaje:", ex)
 
-    @staticmethod
-    def procesar_accion(accion, value, controlar_rele_callback,habilitar_sensor_callback):
-        """
-        Procesa la acción extraída del topic.
-        """
-        if accion == "rele/set":
-            controlar_rele_callback(value)  # Controlar el relé basado en el valor recibido
-        elif accion == "enable/set":
-            habilitar_sensor_callback(value)
-        else:
-            print(f"Acción desconocida: {accion}")

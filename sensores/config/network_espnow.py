@@ -20,7 +20,14 @@ class SensorBase:
             mac, msg = self.e.irecv(0)
             if mac is None:
                 return
-            MessageProcessor.procesar_mensaje(self.mac_propia, mac, msg, self.controlar_rele,self.habilitar_sensor)
+
+            # Diccionario de acciones
+            acciones = {
+                "rele/set": self.controlar_rele,
+                "enable/set": self.habilitar_sensor,
+            }
+
+            MessageProcessor.procesar_mensaje(self.mac_propia, mac, msg, acciones)
 
     def habilitar_sensor(self, estado):
         """
