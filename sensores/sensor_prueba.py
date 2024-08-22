@@ -18,6 +18,11 @@ class SensorPrueba(SensorBase):
             self.e.send(self.peer_mac, data_str)
             print("Mensaje enviado:", data_str)
             time.sleep(1)
+        else:
+            print("sensor deshabilitado")
+
+    def send_rele_state_encriptado(self):
+        if self.enable_sensor: #sensor habilitado
             data2 = {
                     "word" : "encriptado",
                     "topic": "sensor/rele/state",
@@ -37,14 +42,18 @@ class SensorPrueba(SensorBase):
             if estado == "true":
                 print("Prendiendo Rele")
                 self.rele_state = True
+                self.send_rele_state_encriptado() #actualizamos el estado del rele
             elif estado == "false":
                 print("Apangado rele")
                 self.rele_state = False
+                self.send_rele_state_encriptado() #actualizamos el estado del rele
             else:
                 print("Valor incorrecto")
         else:
             print("sensor deshabilitado")
-            
+
+#actualizar el estado 
+
 # from sensor_prueba import SensorPrueba
 sensor = SensorPrueba()
 # sensor.send_sensor_data()
