@@ -10,14 +10,14 @@ class SensorPrueba(SensorBase):
     
     def send_rele_state_encriptado(self):
         if self.enable_sensor: #sensor habilitado
-            data2 = {
+            data = {
                     "word" : "encriptado",
                     "topic": "sensor/rele/state",
                     "value": self.rele_state
                 }
-            data_str2 = json.dumps(data2)
-            self.e.send(self.peer_mac, data_str2)
-            print("Mensaje enviado:", data_str2)
+            data_str = json.dumps(data)
+            self.e.send(self.peer_mac, data_str)
+            print("Mensaje enviado:", data_str)
         else:
             print("sensor deshabilitado")
 
