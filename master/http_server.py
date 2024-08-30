@@ -7,7 +7,7 @@ received_data = {}
 
 def handle_root():
     try:
-        with open('frontend/index.html', 'r') as f:
+        with open('index.html', 'r') as f:
             content = f.read()
         return f"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n{content}".encode()
     except Exception as e:
@@ -32,6 +32,16 @@ def handle_data():
 
     return response.encode()
 
+def handle_static_file(path):
+    try:
+        with open(path, 'r') as f:
+            content = f.read()
+        content_type = 'text/css' if path.endswith('.css') else 'text/plain'
+        return f"HTTP/1.1 200 OK\r\nContent-Type: {content_type}\r\n\r\n{content}".encode()
+    except Exception as e:
+        print(f"Error al leer {path}: {e}")
+        return b"HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nNot Found"
+
 def handle_client(cl):
     try:
         request = cl.recv(1024)  # Recibe la petición del cliente
@@ -47,7 +57,7 @@ def handle_client(cl):
             elif path == b'/data':
                 response = handle_data()
             else:
-                response = handle_not_found()
+                response = handle_static_file(path[1:].decode())
         else:
             response = b"HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/plain\r\n\r\nMethod Not Allowed"
 
