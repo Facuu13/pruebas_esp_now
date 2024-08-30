@@ -3,7 +3,7 @@ from config.network_espnow import SensorBase
 import json
 import machine
 
-class SensorPrueba(SensorBase):
+class ModuloReles(SensorBase):
     def __init__(self):
         super().__init__()
         self.rele_state = False
@@ -38,3 +38,5 @@ class SensorPrueba(SensorBase):
                 print("Valor incorrecto")
         else:
             print("sensor deshabilitado")
+
+reles = ModuloReles()
