@@ -3,6 +3,8 @@
 import socket
 from micropython import alloc_emergency_exception_buf
 
+received_data = {} 
+
 def handle_root():
     return b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!"
 
@@ -11,6 +13,18 @@ def handle_status():
 
 def handle_not_found():
     return b"HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nNot Found"
+
+def handle_data():
+    global received_data
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n"
+    
+    for mac, data in received_data.items():
+        response += f"MAC: {mac}\n"
+        response += f"Topic: {data['topic']}\n"
+        response += f"Value: {data['value']}\n"
+        response += "\n"
+
+    return response.encode()
 
 def handle_client(cl):
     try:
@@ -24,6 +38,8 @@ def handle_client(cl):
                 response = handle_root()
             elif path == b'/status':
                 response = handle_status()
+            elif path == b'/data':
+                response = handle_data()
             else:
                 response = handle_not_found()
         else:

@@ -2,6 +2,7 @@ import network
 import espnow
 import time
 import json
+from http_server import received_data
 
 class ESPNowManager:
     def __init__(self, peer_mac, mensaje_clave):
@@ -44,6 +45,10 @@ class ESPNowManager:
                 print("Topic_general:", new_topic)
                 print("Value:", value)
                 self.mqtt_client.publish(new_topic, str(value))
+                received_data[new_mac] = {
+                    "topic": topic,
+                    "value": value,
+                    }
             elif info == "buscar_canal":
                 self.send(self.peer_mac, self.mensaje_clave)
                 print("Nuevo nodo detectado")
