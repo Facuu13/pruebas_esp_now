@@ -45,7 +45,7 @@ class ESPNowManager:
                 print("Topic_general:", new_topic)
                 print("Value:", value)
                 self.mqtt_client.publish(new_topic, str(value))
-                received_data[new_mac] = {
+                received_data[new_topic] = {
                     "topic": topic,
                     "value": value,
                     }
