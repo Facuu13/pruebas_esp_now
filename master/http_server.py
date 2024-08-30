@@ -6,7 +6,13 @@ from micropython import alloc_emergency_exception_buf
 received_data = {} 
 
 def handle_root():
-    return b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!"
+    try:
+        with open('frontend/index.html', 'r') as f:
+            content = f.read()
+        return f"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n{content}".encode()
+    except Exception as e:
+        print(f"Error al leer index.html: {e}")
+        return b"HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nError interno del servidor"
 
 def handle_status():
     return b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nStatus: OK"
