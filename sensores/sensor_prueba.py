@@ -8,18 +8,15 @@ class SensorPrueba(SensorBase):
         super().__init__()
 
     def send_sensor_data_encriptado(self,dato):
-        if self.enable_sensor: #sensor habilitado
-            data = {
-                    "word" : "encriptado",
-                    "topic": "sensor/prueba",
-                    "value": dato
-                }
-            data_str = json.dumps(data)
-            self.e.send(self.peer_mac, data_str)
-            print("Mensaje enviado:", data_str)
-            time.sleep(1)
-        else:
-            print("sensor deshabilitado")
+        data = {
+                "word" : "encriptado",
+                "topic": "sensor/prueba",
+                "value": dato
+            }
+        data_str = json.dumps(data)
+        self.e.send(self.peer_mac, data_str)
+        print("Mensaje enviado:", data_str)
+        time.sleep(1)
 
 
 
