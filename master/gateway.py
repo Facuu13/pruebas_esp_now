@@ -5,8 +5,7 @@ from wifi_manager import WiFiManager
 from mqtt_manager import MQTTManager
 import http_server  
 
-SSID = "quepasapatejode"
-PASSWORD = "losvilla08"
+
 cliente_id = 'dispositivo1'
 mqtt_broker = '192.168.1.11'
 puerto = 1883
@@ -29,7 +28,7 @@ def mensaje_callback(topic, msg):
 
 
 # Inicialización
-wifi_manager = WiFiManager(SSID, PASSWORD)
+wifi_manager = WiFiManager()
 mqtt_manager = MQTTManager(cliente_id, mqtt_broker, puerto)
 espnow_manager = ESPNowManager(peer_mac, mensaje_clave)
 

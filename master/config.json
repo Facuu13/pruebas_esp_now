@@ -1,0 +1,7 @@
+{
+    "mode": "CL", 
+    "ssid": "quepasapatejode",
+    "password": "losvilla08",
+    "ap_ssid": "ESP32_AP",
+    "ap_password": "12345678"
+}
