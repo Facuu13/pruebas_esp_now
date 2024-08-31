@@ -61,20 +61,23 @@ class MessageProcessor:
                 # Extraer la mac 
                 identifier = MessageProcessor.extraer_mac(topic)
                 if identifier and MessageProcessor.validar_mac(mac_propia, identifier):
-                    # Primero, tratar de extraer el número del relé
-                    rele_numero = MessageProcessor.extraer_numero_rele(topic)
-                    print("numero de rele:", rele_numero)
-                    if rele_numero:
-                        # Ejecutar la acción con el número del relé y el estado
-                        accion = MessageProcessor.extraer_accion(topic)
-                        acciones[accion](rele_numero, value)
-                    else:
-                        # Si no es un control de relé, revisamos las otras acciones
-                        accion = MessageProcessor.extraer_accion(topic)
-                        if accion in acciones:
-                            acciones[accion](value)  # Llama a la función correspondiente
+                    # Extraer la acción
+                    accion = MessageProcessor.extraer_accion(topic)
+                    if accion in acciones:
+                        if accion == "rele/set":
+                            rele_numero = MessageProcessor.extraer_numero_rele(topic)
+                            print("numero de rele:", rele_numero)
+                            if rele_numero:
+                                acciones[accion](rele_numero, value)
+                            else:
+                                print("No se pudo extraer el número de relé")
+                        
                         else:
-                            print(f"Acción desconocida: {accion}")
+                            # Para otras acciones que no requieren número de relé 
+                            # y aca podemos agregar otras acciones
+                            acciones[accion](value)  # Llama a la función correspondiente
+                    else:
+                        print(f"Acción desconocida: {accion}")
             else:
                 print("No se pudo extraer el identificador del topic")
 
