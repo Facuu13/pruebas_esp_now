@@ -1,7 +1,7 @@
 import json
 import re
 
-# /sensor/08b61f811920/enable/set
+# /sensor/f412fa80a7f0/rele/set/1
 class MessageProcessor:
     @staticmethod
     def extraer_mac(topic):
@@ -18,7 +18,7 @@ class MessageProcessor:
         """
         Extrae la acción del topic que sigue a la MAC.
         """
-        match = re.search(r'/sensor/[^/]+/([^/]+/[^/]+)$', topic)
+        match = re.search(r'/sensor/[^/]+/([^/]+/[^/]+)', topic)
         if match:
             return match.group(1)
         return None
@@ -34,6 +34,16 @@ class MessageProcessor:
         else:
             print("Diferente MAC")
             return False
+    
+    @staticmethod
+    def extraer_numero_rele(topic):
+        """
+        Extrae el número del relé desde el topic.
+        """
+        match = re.search(r'/rele/set/(\d+)$', topic)
+        if match:
+            return int(match.group(1))
+        return None
 
     @staticmethod
     def procesar_mensaje(mac_propia, mac, msg, acciones):
@@ -51,13 +61,20 @@ class MessageProcessor:
                 # Extraer la mac 
                 identifier = MessageProcessor.extraer_mac(topic)
                 if identifier and MessageProcessor.validar_mac(mac_propia, identifier):
-                    accion = MessageProcessor.extraer_accion(topic)
-
-                    # Busca la función asociada a la acción en el diccionario
-                    if accion in acciones:
-                        acciones[accion](value)  # Llama a la función correspondiente
+                    # Primero, tratar de extraer el número del relé
+                    rele_numero = MessageProcessor.extraer_numero_rele(topic)
+                    print("numero de rele:", rele_numero)
+                    if rele_numero:
+                        # Ejecutar la acción con el número del relé y el estado
+                        accion = MessageProcessor.extraer_accion(topic)
+                        acciones[accion](rele_numero, value)
                     else:
-                        print(f"Acción desconocida: {accion}")
+                        # Si no es un control de relé, revisamos las otras acciones
+                        accion = MessageProcessor.extraer_accion(topic)
+                        if accion in acciones:
+                            acciones[accion](value)  # Llama a la función correspondiente
+                        else:
+                            print(f"Acción desconocida: {accion}")
             else:
                 print("No se pudo extraer el identificador del topic")
 

@@ -6,33 +6,39 @@ import machine
 class ModuloReles(SensorBase):
     def __init__(self):
         super().__init__()
-        self.rele_state = False
+        self.rele_state_1 = False
+        self.rele_state_2 = False
+        self.rele_state_3 = False
+        self.rele_state_4 = False
     
     def send_rele_state_encriptado(self):
-        data = {
-                "word" : "encriptado",
-                "topic": "sensor/rele/state",
-                "value": self.rele_state
+        for i in range(1, 5):
+            data = {
+                "word": "encriptado",
+                "topic": f"sensor/rele/state/{i}",
+                "value": getattr(self, f"rele_state_{i}") #obtenemos el valor del estado del rele
             }
-        data_str = json.dumps(data)
-        self.e.send(self.peer_mac, data_str)
-        print("Mensaje enviado:", data_str)
+            data_str = json.dumps(data)
+            self.e.send(self.peer_mac, data_str)
+            print("Mensaje enviado:", data_str)
 
 
-    def controlar_rele(self, estado):
+    def controlar_rele(self, rele_numero, estado):
         """
-        Controla el relé (simulado) en base al estado proporcionado.
+        Controla el relé especificado en base al número del relé y el estado proporcionado.
         """
-        if estado == "true":
-            print("Prendiendo Rele")
-            self.rele_state = True
-            self.send_rele_state_encriptado() #actualizamos el estado del rele
-        elif estado == "false":
-            print("Apangado rele")
-            self.rele_state = False
-            self.send_rele_state_encriptado() #actualizamos el estado del rele
+        if rele_numero in range(1, 5):
+            if estado == "true":
+                print(f"Prendiendo Rele {rele_numero}")
+                setattr(self, f"rele_state_{rele_numero}", True)
+            elif estado == "false":
+                print(f"Apagando Rele {rele_numero}")
+                setattr(self, f"rele_state_{rele_numero}", False)
+            else:
+                print("Valor incorrecto")
+            self.send_rele_state_encriptado()  # Actualiza y envía el estado del relé
         else:
-            print("Valor incorrecto")
+            print("Número de relé inválido")
 
 
 reles = ModuloReles()
