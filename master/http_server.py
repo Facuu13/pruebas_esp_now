@@ -25,7 +25,7 @@ def handle_data():
     response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n"
     
     for mac, data in received_data.items():
-        response += f"MAC: {mac}\n"
+        response += f"Sensor: {mac}\n"
         response += f"Topic: {data['topic']}\n"
         response += f"Value: {data['value']}\n"
         response += "\n"

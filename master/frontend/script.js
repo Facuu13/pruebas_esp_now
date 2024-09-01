@@ -11,11 +11,11 @@ function cargarDatos() {
                 const [mac, topic, value] = sensor.split("\n");
                 let isChecked = value.includes("True") ? "checked" : "";
 
-                // Solo crear switch para sensor/rele/state
+                // Crear switch para sensor/rele/state
                 if (topic.includes("sensor/rele/state")) {
                     const card = `
                         <div class="sensor-card">
-                            <p><strong>${mac}</strong></p>
+                            <p><strong>${mac.split("/")[0]}</strong></p>
                             <p>${topic}</p>
                             <label class="switch">
                                 <input type="checkbox" ${isChecked} disabled>
@@ -27,7 +27,7 @@ function cargarDatos() {
                     // Para otros tipos de sensores, simplemente mostrar el valor
                     const card = `
                         <div class="sensor-card">
-                            <p><strong>${mac}</strong></p>
+                            <p><strong>Sensor: ${mac.split("/")[0]}</strong></p>
                             <p>${topic}</p>
                             <p><span class="sensor-value">${value}</span></p>
                         </div>`;
