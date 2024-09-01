@@ -9,13 +9,30 @@ function cargarDatos() {
 
             sensors.forEach(sensor => {
                 const [mac, topic, value] = sensor.split("\n");
-                const card = `
-                    <div class="sensor-card">
-                        <p><strong>${mac}</strong></p>
-                        <p>${topic}</p>
-                        <p><span class="sensor-value">${value}</span></p>
-                    </div>`;
-                sensorDataContainer.innerHTML += card;
+                let isChecked = value.includes("True") ? "checked" : "";
+
+                // Solo crear switch para sensor/rele/state
+                if (topic.includes("sensor/rele/state")) {
+                    const card = `
+                        <div class="sensor-card">
+                            <p><strong>${mac}</strong></p>
+                            <p>${topic}</p>
+                            <label class="switch">
+                                <input type="checkbox" ${isChecked} disabled>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>`;
+                    sensorDataContainer.innerHTML += card;
+                } else {
+                    // Para otros tipos de sensores, simplemente mostrar el valor
+                    const card = `
+                        <div class="sensor-card">
+                            <p><strong>${mac}</strong></p>
+                            <p>${topic}</p>
+                            <p><span class="sensor-value">${value}</span></p>
+                        </div>`;
+                    sensorDataContainer.innerHTML += card;
+                }
             });
         })
         .catch(error => console.error('Error al cargar los datos:', error));
