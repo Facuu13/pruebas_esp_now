@@ -54,3 +54,4 @@ class WiFiManager:
         print("Punto de acceso iniciado")
         print("SSID:", ap_ssid)
         print("Contraseña:", ap_password)
+        print(self.ap.ifconfig())
