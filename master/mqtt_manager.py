@@ -2,14 +2,16 @@ import time
 from umqtt.simple import MQTTClient
 
 class MQTTManager:
-    def __init__(self, client_id, mqtt_broker, puerto):
+    def __init__(self, client_id, mqtt_broker, puerto, mqtt_user, mqtt_pass):
         self.cliente_id = client_id
         self.mqtt_broker = mqtt_broker
         self.puerto = puerto
+        self.mqtt_user = mqtt_user
+        self.mqtt_pass = mqtt_pass
         self.cliente = self.conectar_mqtt()
     
     def conectar_mqtt(self):
-        cliente = MQTTClient(self.cliente_id, self.mqtt_broker, port=self.puerto)
+        cliente = MQTTClient(self.cliente_id, self.mqtt_broker, port=self.puerto, user=self.mqtt_user, password=self.mqtt_pass)
         max_intentos = 5
         intentos = 0
         while intentos < max_intentos:

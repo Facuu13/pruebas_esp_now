@@ -8,6 +8,8 @@ import http_server
 
 cliente_id = 'dispositivo1'
 mqtt_broker = '192.168.1.11'
+mqtt_user = 'wentux'
+mqtt_pass = 'wentux123'
 puerto = 1883
 peer_mac = b'\xff' * 6
 mensaje_clave = json.dumps({"respuesta": "canal_correcto"})
@@ -33,7 +35,7 @@ modo = wifi_manager.config.get("mode", "CL")
 espnow_manager = ESPNowManager(peer_mac, mensaje_clave,modo_operacion=modo)
 
 if modo == 'CL':
-    mqtt_manager = MQTTManager(cliente_id, mqtt_broker, puerto)
+    mqtt_manager = MQTTManager(cliente_id, mqtt_broker, puerto, mqtt_user, mqtt_pass)
     mqtt_manager.set_callback(mensaje_callback)
     mqtt_manager.subscribe(topic_prueba)
     espnow_manager.set_mqtt_client(mqtt_manager) #permite el acceso al cliente mqtt desde espnow
