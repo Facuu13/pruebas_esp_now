@@ -72,5 +72,23 @@ function cargarDatos() {
         .catch(error => console.error('Error al cargar los datos:', error));
 }
 
-// Iniciar manejo de login
+// Función para manejar el logout
+function handleLogout() {
+    const logoutButton = document.getElementById('logout-btn');
+    logoutButton.addEventListener('click', function() {
+        // Mostrar la sección de login y ocultar la página principal
+        document.getElementById('login-section').classList.remove('hidden');
+        document.getElementById('main-page').classList.add('hidden');
+
+        // Limpiar los campos de login
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+
+        // Opcional: detener la actualización automática si es necesario
+        // Si es necesario detener el setInterval, guardar su ID y usar clearInterval aquí.
+    });
+}
+
+// Iniciar manejo de login y logout
 handleLogin();
+handleLogout();
