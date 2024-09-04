@@ -5,14 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wentux</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
+
+    <!-- Sección de Login -->
+    <section id="login-section" class="form-login">
+        <h5>Formulario Login</h5>
+        <input id="username" class="controls" type="text" placeholder="Usuario">
+        <input id="password" class="controls" type="password" placeholder="Contraseña">
+        <input id="login-btn" class="buttons" type="submit" value="Ingresar">
+        <p id="error-msg" style="color:red;display:none;">Usuario o contraseña incorrectos.</p>
+    </section>
+
+    <!-- Sección Principal (oculta inicialmente) -->
+    <div id="main-page" class="container hidden">
         <h1>Wentux</h1>
         <div id="sensor-data" class="sensor-data">
             <!-- Los datos del sensor se mostrarán aquí -->
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

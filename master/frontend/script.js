@@ -1,6 +1,40 @@
+// Función para manejar el login
+function handleLogin() {
+    const loginButton = document.getElementById('login-btn');
+    loginButton.addEventListener('click', function() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        if (username === 'facu' && password === 'wentux') {
+            // Ocultar la sección de login y mostrar la página principal
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('main-page').classList.remove('hidden');
+
+            // Cargar los datos inmediatamente después de iniciar sesión correctamente
+            cargarDatos();
+
+            // Iniciar la actualización automática cada 5 segundos
+            setInterval(() => {
+                cargarDatos();
+            }, 5000);
+        } else {
+            // Mostrar mensaje de error
+            document.getElementById('error-msg').style.display = 'block';
+        }
+    });
+}
+
+// Función para cargar los datos de los sensores
 function cargarDatos() {
+    console.log('Cargando datos...'); // Para verificar si se llama la función
+
     fetch('/data')
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error en la respuesta: ${response.statusText}`);
+            }
+            return response.text();
+        })
         .then(data => {
             const sensorDataContainer = document.getElementById('sensor-data');
             sensorDataContainer.innerHTML = ''; // Limpiar contenido previo
@@ -38,8 +72,5 @@ function cargarDatos() {
         .catch(error => console.error('Error al cargar los datos:', error));
 }
 
-// Cargar datos al inicio
-cargarDatos();
-
-// Actualizar datos cada 5 segundos
-setInterval(cargarDatos, 5000);
+// Iniciar manejo de login
+handleLogin();
