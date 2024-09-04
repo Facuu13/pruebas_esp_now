@@ -89,6 +89,23 @@ function handleLogout() {
     });
 }
 
+// Función para mostrar u ocultar la contraseña
+function togglePasswordVisibility() {
+    const passwordField = document.getElementById('password');
+    const toggleCheckbox = document.getElementById('toggle-password');
+
+    toggleCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            passwordField.type = 'text'; // Mostrar contraseña
+        } else {
+            passwordField.type = 'password'; // Ocultar contraseña
+        }
+    });
+}
+
+// Ejecutar la función para manejar la visibilidad de la contraseña
+togglePasswordVisibility();
+
 // Iniciar manejo de login y logout
 handleLogin();
 handleLogout();

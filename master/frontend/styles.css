@@ -132,10 +132,12 @@
   #login-btn {
     width: 100%;
     height: 40px;
-    background: #01ab2e;
+    background: #16682c;
     border: none;
     color: white;
+    font-weight: bold;
     margin-bottom: 16px;
+    cursor: pointer;
   }
   
   .form-login p {
@@ -176,4 +178,19 @@
 #main-page {
     position: relative; /* Necesario para que el botón se posicione correctamente */
     padding-top: 60px; /* Asegura que el contenido no esté oculto debajo del botón */
+}
+
+.toggle-label {
+    font-size: 14px; /* Tamaño del texto */
+    color: white; /* Color del texto */
+    font-weight: bold;
+    margin-left: 5px; /* Separación del checkbox */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.toggle-label input {
+    margin-right: 5px; /* Espacio entre el checkbox y el texto */
 }
