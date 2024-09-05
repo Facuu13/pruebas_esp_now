@@ -3,5 +3,10 @@
     "ssid": "quepasapatejode",
     "password": "losvilla08",
     "ap_ssid": "ESP32_AP",
-    "ap_password": "12345678"
+    "ap_password": "12345678",
+    "cliente_id" : "dispositivo1",
+    "mqtt_broker" : "192.168.1.11",
+    "mqtt_user" : "wentux",
+    "mqtt_pass" : "wentux123",
+    "puerto" : 1883
 }

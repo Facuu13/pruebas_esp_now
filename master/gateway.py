@@ -6,11 +6,6 @@ from mqtt_manager import MQTTManager
 import http_server  
 
 
-cliente_id = 'dispositivo1'
-mqtt_broker = '192.168.1.11'
-mqtt_user = 'wentux'
-mqtt_pass = 'wentux123'
-puerto = 1883
 peer_mac = b'\xff' * 6
 mensaje_clave = json.dumps({"respuesta": "canal_correcto"})
 topic_prueba = b'/sensor/#'
@@ -32,6 +27,13 @@ def mensaje_callback(topic, msg):
 # Inicialización
 wifi_manager = WiFiManager()
 modo = wifi_manager.config.get("mode", "CL")
+
+cliente_id = wifi_manager.config.get("cliente_id")
+mqtt_broker = wifi_manager.config.get("mqtt_broker")
+puerto = wifi_manager.config.get("puerto")
+mqtt_user = wifi_manager.config.get("mqtt_user")
+mqtt_pass = wifi_manager.config.get("mqtt_pass")
+
 espnow_manager = ESPNowManager(peer_mac, mensaje_clave,modo_operacion=modo)
 
 if modo == 'CL':
