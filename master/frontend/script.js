@@ -52,7 +52,7 @@ function cargarDatos() {
                             <p><strong>${mac.split("/")[0]}</strong></p>
                             <p>${topic}</p>
                             <label class="switch">
-                                <input type="checkbox" ${isChecked} disabled>
+                            <input type="checkbox" ${isChecked} onclick="toggleRelay('${mac}', '${topic}', this)">
                                 <span class="slider round"></span>
                             </label>
                         </div>`;
@@ -70,6 +70,12 @@ function cargarDatos() {
             });
         })
         .catch(error => console.error('Error al cargar los datos:', error));
+}
+
+function toggleRelay(mac, topic, element) {
+    const newState = element.checked ? "ON" : "OFF";
+    console.log(`Cambiando estado del relé. MAC: ${mac}, Topic: ${topic}, Nuevo estado: ${newState}`);
+    // Aquí es donde más adelante enviaríamos el cambio al servidor
 }
 
 // Función para manejar el logout
