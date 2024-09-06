@@ -6,6 +6,13 @@ import json
 
 received_data = {}
 
+espnow_manager = None  # Añadir esta variable global
+peer_mac = b'\xff' * 6
+
+def set_espnow_manager(manager):
+    global espnow_manager
+    espnow_manager = manager
+
 def handle_update_relay(cl, request_lines):
     try:
         # Leer el cuerpo de la solicitud
@@ -15,9 +22,20 @@ def handle_update_relay(cl, request_lines):
         topic = data['topic']
         state = data['state']
         
+        # Extraer el número del relé desde el topic (último número del topic)
+        relay_number = topic.split('/')[-1]  # Extraemos el número del relé del topic
+        mac_sensor = mac.split("/")[0] # Extraemos la mac del sensor
+
         # Actualizar el estado en received_data
         new_topic = f"{mac}"
         received_data[new_topic] = {'topic': topic, 'value': state}
+
+        # Si espnow_manager está disponible, enviamos los datos por ESP-NOW
+        if espnow_manager:
+            topic_final = f"/sensor/{mac_sensor}/rele/set/{relay_number}"
+            mensaje = json.dumps({"topic": topic_final, "value": state})
+            espnow_manager.send(peer_mac, mensaje)
+            print(f"Enviado por ESP-NOW: {mensaje}")
 
         # Responder al cliente
         response = {'status': 'success'}

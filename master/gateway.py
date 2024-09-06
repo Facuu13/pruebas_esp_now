@@ -36,6 +36,9 @@ mqtt_pass = wifi_manager.config.get("mqtt_pass")
 
 espnow_manager = ESPNowManager(peer_mac, mensaje_clave,modo_operacion=modo)
 
+# Pasamos espnow_manager al servidor HTTP
+http_server.set_espnow_manager(espnow_manager)
+
 if modo == 'CL':
     mqtt_manager = MQTTManager(cliente_id, mqtt_broker, puerto, mqtt_user, mqtt_pass)
     mqtt_manager.set_callback(mensaje_callback)
