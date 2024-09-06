@@ -2,8 +2,32 @@
 
 import socket
 from micropython import alloc_emergency_exception_buf
+import json
 
-received_data = {} 
+received_data = {}
+
+def handle_update_relay(cl, request_lines):
+    try:
+        # Leer el cuerpo de la solicitud
+        body = request_lines[-1]
+        data = json.loads(body)
+        mac = data['mac']
+        topic = data['topic']
+        state = data['state']
+        
+        # Actualizar el estado en received_data
+        new_topic = f"{mac}"
+        received_data[new_topic] = {'topic': topic, 'value': state}
+
+        # Responder al cliente
+        response = {'status': 'success'}
+    except Exception as e:
+        print('Error:', e)
+        response = {'status': 'error', 'message': str(e)}
+    
+    response_body = json.dumps(response)
+    cl.send(b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + response_body.encode())
+
 
 def handle_root():
     try:
@@ -25,9 +49,9 @@ def handle_data():
     response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n"
     
     for mac, data in received_data.items():
-        response += f"Sensor: {mac}\n"
-        response += f"Topic: {data['topic']}\n"
-        response += f"Value: {data['value']}\n"
+        response += f"{mac}\n"
+        response += f"{data['topic']}\n"
+        response += f"{data['value']}\n"
         response += "\n"
 
     return response.encode()
@@ -58,6 +82,9 @@ def handle_client(cl):
                 response = handle_data()
             else:
                 response = handle_static_file(path[1:].decode())
+        elif method == b'POST' and path == b'/update_relay':
+            handle_update_relay(cl, request_lines)
+            return
         else:
             response = b"HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/plain\r\n\r\nMethod Not Allowed"
 

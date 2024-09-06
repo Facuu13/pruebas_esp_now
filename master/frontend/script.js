@@ -49,8 +49,8 @@ function cargarDatos() {
                 if (topic.includes("sensor/rele/state")) {
                     const card = `
                         <div class="sensor-card">
-                            <p><strong>${mac.split("/")[0]}</strong></p>
-                            <p>${topic}</p>
+                            <p><strong>Sensor: ${mac.split("/")[0]}</strong></p>
+                            <p>Topic: ${topic}</p>
                             <label class="switch">
                             <input type="checkbox" ${isChecked} onclick="toggleRelay('${mac}', '${topic}', this)">
                                 <span class="slider round"></span>
@@ -62,7 +62,7 @@ function cargarDatos() {
                     const card = `
                         <div class="sensor-card">
                             <p><strong>Sensor: ${mac.split("/")[0]}</strong></p>
-                            <p>${topic}</p>
+                            <p>Topic: ${topic}</p>
                             <p><span class="sensor-value">${value}</span></p>
                         </div>`;
                     sensorDataContainer.innerHTML += card;
@@ -73,10 +73,42 @@ function cargarDatos() {
 }
 
 function toggleRelay(mac, topic, element) {
-    const newState = element.checked ? "ON" : "OFF";
+    const newState = element.checked ? "True" : "False";
     console.log(`Cambiando estado del relé. MAC: ${mac}, Topic: ${topic}, Nuevo estado: ${newState}`);
-    // Aquí es donde más adelante enviaríamos el cambio al servidor
+
+    // Crear el objeto de datos para enviar en el formato correcto
+    const data = {
+        mac: mac,
+        topic: topic,
+        state: newState
+    };
+
+    // Enviar la solicitud POST al servidor
+    fetch('/update_relay', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+        return response.json();
+    })
+    .then(responseData => {
+        console.log('Respuesta del servidor:', responseData);
+    })
+    .catch(error => {
+        console.error('Error al enviar la solicitud:', error);
+    });
 }
+
+
+
+
+
 
 // Función para manejar el logout
 function handleLogout() {
