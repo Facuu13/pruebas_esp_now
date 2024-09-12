@@ -3,7 +3,7 @@ import time
 import json
 
 class WiFiManager:
-    def __init__(self, config_path='config.json'):
+    def __init__(self, config_path='config/config.json'):
         self.config = self.cargar_configuracion(config_path)
         self.sta, self.ap = self.wifi_reset()
         self.iniciar_wifi()
