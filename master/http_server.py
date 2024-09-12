@@ -49,7 +49,7 @@ def handle_update_relay(cl, request_lines):
 
 def handle_root():
     try:
-        with open('index.html', 'r') as f:
+        with open('frontend/index.html', 'r') as f:
             content = f.read()
         return f"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n{content}".encode()
     except Exception as e:
