@@ -8,16 +8,22 @@ class MQTTManager:
         self.puerto = puerto
         self.mqtt_user = mqtt_user
         self.mqtt_pass = mqtt_pass
+        with open('certs/ca.crt', 'rb') as f:
+            self.ca_cert = f.read()
+        with open('certs/client.crt', 'rb') as f:
+            self.client_cert = f.read()
+        with open('certs/client.key', 'rb') as f:
+            self.client_key = f.read()
         self.cliente = self.conectar_mqtt()
     
     def conectar_mqtt(self):
-        cliente = MQTTClient(self.cliente_id, self.mqtt_broker, port=self.puerto, user=self.mqtt_user, password=self.mqtt_pass)
+        cliente = MQTTClient(self.cliente_id, self.mqtt_broker, port=self.puerto, user=self.mqtt_user, password=self.mqtt_pass,ssl=True, ssl_params={'key': self.client_key, 'cert': self.client_cert})
         max_intentos = 5
         intentos = 0
         while intentos < max_intentos:
             try:
                 cliente.connect()
-                print("Conectado al broker MQTT")
+                print("Conectado al broker MQTT con TLS")
                 return cliente
             except Exception as e:
                 intentos += 1

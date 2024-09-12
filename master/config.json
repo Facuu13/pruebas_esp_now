@@ -8,5 +8,5 @@
     "mqtt_broker" : "192.168.1.11",
     "mqtt_user" : "wentux",
     "mqtt_pass" : "wentux123",
-    "puerto" : 1883
+    "puerto" : 8884
 }
