@@ -29,6 +29,9 @@
   .sensor-data {
     border-bottom: 1px solid #ddd;
     padding: 10px 0;
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: 1fr 1fr 1fr;
   }
   
   .sensor-card {
@@ -194,3 +197,20 @@
 .toggle-label input {
     margin-right: 5px; /* Espacio entre el checkbox y el texto */
 }
+
+@media (max-width: 1000px) and (min-width: 601px) {
+  .sensor-data {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .sensor-data {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* .mi-clase {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+} */
