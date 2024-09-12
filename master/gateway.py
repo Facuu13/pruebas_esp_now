@@ -1,8 +1,8 @@
 import time
 import json
-from espnow_manager import ESPNowManager
-from wifi_manager import WiFiManager
-from mqtt_manager import MQTTManager
+from config.espnow_manager import ESPNowManager
+from config.wifi_manager import WiFiManager
+from config.mqtt_manager import MQTTManager
 import http_server  
 
 
