@@ -17,6 +17,7 @@ class ESPNowManager:
         self.e.irq(self.recv_cb)
         self.topic_discovery = "/discovery"
         self.key = b"1234567890123456"
+        self.iv = b"ivfixed987654321"  # Debe tener exactamente 16 bytes
     
     def activar_espNow(self):
         e = espnow.ESPNow()
@@ -27,9 +28,44 @@ class ESPNowManager:
             return e
         else:
             raise RuntimeError("No se pudo activar ESP-NOW")
+    
+    def cifrar_datos(self, data_str):
+        """
+        Cifra los datos usando AES en modo CBC.
+        """
+        pad = 16 - (len(data_str) % 16)
+        data_str_padded = data_str + ' ' * pad  # Añadir padding
 
-    def send(self, mac, mensaje):
-        self.e.send(mac, mensaje)
+        aes = cryptolib.aes(self.key, 2, self.iv)  # Crear instancia AES en modo CBC
+        
+        encrypted_data = aes.encrypt(data_str_padded)  # Cifrar datos
+        return self.iv, encrypted_data  # Devolver IV y datos cifrados
+    
+    def send_encrypted_data(self, data):
+        """
+        Cifra y envía los datos por ESP-NOW.
+        """
+        data_str = json.dumps(data)  # Convertir los datos a cadena JSON
+        
+        # Cifrar los datos
+        iv, encrypted_data = self.cifrar_datos(data_str)
+        
+        # Convertir IV y datos cifrados a hexadecimal para enviar
+        iv_hex = ubinascii.hexlify(iv)
+        encrypted_data_hex = ubinascii.hexlify(encrypted_data)
+
+        # Construir el payload
+        payload = {
+            "iv": iv_hex.decode('utf-8'),
+            "data": encrypted_data_hex.decode('utf-8')
+        }
+
+        payload_str = json.dumps(payload)
+        self.e.send(self.peer_mac, payload_str)  # Enviar mensaje cifrado
+        print("Mensaje encriptado enviado:", payload_str)
+
+    def send(self, mensaje):
+        self.e.send(self.peer_mac, mensaje)
 
     def desencriptar_datos(self, iv_hex, encrypted_data_hex):
         """

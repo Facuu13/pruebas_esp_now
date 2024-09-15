@@ -19,9 +19,8 @@ def mensaje_callback(topic, msg):
         "topic": topic,
         "value": msg
     }
-    data_str = json.dumps(data)
-    espnow_manager.send(peer_mac, data_str)
-    print("Mensaje enviado:", data_str)
+    espnow_manager.send_encrypted_data(data)
+    print("Mensaje enviado:", data)
 
 
 # Inicialización

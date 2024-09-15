@@ -33,8 +33,11 @@ def handle_update_relay(cl, request_lines):
         # Si espnow_manager está disponible, enviamos los datos por ESP-NOW
         if espnow_manager:
             topic_final = f"/sensor/{mac_sensor}/rele/set/{relay_number}"
-            mensaje = json.dumps({"topic": topic_final, "value": state})
-            espnow_manager.send(peer_mac, mensaje)
+            mensaje ={
+                "topic":topic_final,
+                "value": state
+            }
+            espnow_manager.send_encrypted_data(mensaje)
             print(f"Enviado por ESP-NOW: {mensaje}")
 
         # Responder al cliente
