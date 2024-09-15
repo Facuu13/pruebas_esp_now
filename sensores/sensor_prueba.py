@@ -7,15 +7,18 @@ class SensorPrueba(SensorBase):
     def __init__(self):
         super().__init__()
 
-    def send_sensor_data_encriptado(self,dato):
+    def send_sensor_data(self, dato):
+        """
+        Enviar datos del sensor cifrados.
+        """
         data = {
-                "topic": "sensor/prueba",
-                "value": dato
-            }
-        data_str = json.dumps(data)
-        self.e.send(self.peer_mac, data_str)
-        print("Mensaje enviado:", data_str)
-        time.sleep(1)
+            "topic": "sensor/prueba",
+            "value": dato
+        }
+
+        # Utilizamos el método general de la clase base para cifrar y enviar los datos
+        self.send_encrypted_data(data)
+        print("Datos del sensor enviados:", data)
 
 
 
