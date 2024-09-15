@@ -25,11 +25,12 @@ class ModuloReles(SensorBase):
         """
         Controla el relé especificado en base al número del relé y el estado proporcionado.
         """
+        estado_new = str(estado).lower()
         if rele_numero in range(1, 5):
-            if estado == "True" or "true":
+            if estado_new == "true":
                 print(f"Prendiendo Rele {rele_numero}")
                 setattr(self, f"rele_state_{rele_numero}", True)
-            elif estado == "False" or "false":
+            elif estado_new == "false":
                 print(f"Apagando Rele {rele_numero}")
                 setattr(self, f"rele_state_{rele_numero}", False)
             else:
