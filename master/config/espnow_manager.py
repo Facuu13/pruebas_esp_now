@@ -4,6 +4,10 @@ import time
 import json
 from http_server import received_data
 
+import cryptolib
+import ubinascii
+
+
 class ESPNowManager:
     def __init__(self, peer_mac, mensaje_clave, modo_operacion="CL"):
         self.peer_mac = peer_mac
@@ -12,6 +16,7 @@ class ESPNowManager:
         self.e = self.activar_espNow()
         self.e.irq(self.recv_cb)
         self.topic_discovery = "/discovery"
+        self.key = b"1234567890123456"
     
     def activar_espNow(self):
         e = espnow.ESPNow()
@@ -25,13 +30,39 @@ class ESPNowManager:
 
     def send(self, mac, mensaje):
         self.e.send(mac, mensaje)
+
+    def desencriptar_datos(self, iv_hex, encrypted_data_hex):
+        """
+        Desencripta los datos usando AES en modo CBC.
+        """
+        iv = ubinascii.unhexlify(iv_hex)  # Convertir IV de hex a bytes
+        encrypted_data = ubinascii.unhexlify(encrypted_data_hex)  # Convertir datos cifrados de hex a bytes
+
+        aes = cryptolib.aes(self.key, 2, iv)  # Crear instancia AES en modo CBC con el IV recibido
+        decrypted_data_padded = aes.decrypt(encrypted_data)  # Desencriptar datos
+        decrypted_data = decrypted_data_padded.rstrip()  # Eliminar padding
+        return decrypted_data.decode('utf-8')
     
     def recv_cb(self, e):
         while True:
             mac, msg = e.irecv(0)
             if mac is None:
                 return
-            self.procesar_mensaje(mac, msg)
+            
+            try:
+                data = json.loads(msg)
+                iv_hex = data.get("iv")
+                encrypted_data_hex = data.get("data")
+
+                if iv_hex and encrypted_data_hex:
+                    # Desencriptar los datos
+                    decrypted_data = self.desencriptar_datos(iv_hex, encrypted_data_hex)
+                    print("Datos desencriptados:", decrypted_data)
+                    self.procesar_mensaje(mac, decrypted_data)
+
+            except Exception as ex:
+                print("Error procesando el mensaje encriptado:", ex)
+
     
     def procesar_mensaje(self, mac, msg):
         try:
