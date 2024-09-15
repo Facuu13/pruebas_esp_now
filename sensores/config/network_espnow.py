@@ -11,10 +11,11 @@ class SensorBase:
         self.sta, self.ap = WiFiConfig.wifi_reset()
         self.mac_propia = (self.sta.config('mac')).hex()  # obtenemos la mac del chip
         self.e = ESPNowConfig.setup_espnow(self.peer_mac)
-        ESPNowConfig.buscar_canal(self.e, self.sta, self.peer_mac)
-        self.e.irq(self.recv_cb)
         self.key = b"1234567890123456"  # Clave AES de 16 bytes para todos los sensores
         self.iv = b"ivfixed123456789"  # Debe tener exactamente 16 bytes
+        ESPNowConfig.buscar_canal(self.e, self.sta, self.peer_mac, self.key, self.iv)
+        self.e.irq(self.recv_cb)
+        
     
     def cifrar_datos(self, data_str):
         """
