@@ -9,7 +9,6 @@ class SensorPrueba(SensorBase):
 
     def send_sensor_data_encriptado(self,dato):
         data = {
-                "word" : "encriptado",
                 "topic": "sensor/prueba",
                 "value": dato
             }

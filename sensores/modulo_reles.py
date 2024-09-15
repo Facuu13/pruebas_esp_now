@@ -14,7 +14,6 @@ class ModuloReles(SensorBase):
     def send_rele_state_encriptado(self):
         for i in range(1, 5):
             data = {
-                "word": "encriptado",
                 "topic": f"sensor/rele/state/{i}",
                 "value": getattr(self, f"rele_state_{i}") #obtenemos el valor del estado del rele
             }
