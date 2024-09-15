@@ -120,7 +120,7 @@ class ESPNowManager:
                     self.mqtt_client.publish(new_topic, str(value))
 
             elif info == "buscar_canal":
-                self.send(self.peer_mac, self.mensaje_clave)
+                self.send(self.mensaje_clave)
                 print("Nuevo nodo detectado")
                 print("Nodo: ",mac.hex())
                 # Solo publicar en MQTT si estamos en modo CL
