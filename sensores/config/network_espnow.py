@@ -51,18 +51,48 @@ class SensorBase:
         self.e.send(self.peer_mac, payload_str)  # Enviar mensaje cifrado
         print("Mensaje encriptado enviado:", payload_str)
 
+    def desencriptar_datos(self, iv_hex, encrypted_data_hex):
+        """
+        Desencripta los datos usando AES en modo CBC.
+        """
+        iv = ubinascii.unhexlify(iv_hex)  # Convertir IV de hex a bytes
+        encrypted_data = ubinascii.unhexlify(encrypted_data_hex)  # Convertir datos cifrados de hex a bytes
+
+        aes = cryptolib.aes(self.key, 2, iv)  # Crear instancia AES en modo CBC con el IV recibido
+        decrypted_data_padded = aes.decrypt(encrypted_data)  # Desencriptar datos
+        decrypted_data = decrypted_data_padded.rstrip()  # Eliminar padding
+        return decrypted_data.decode('utf-8')
+
     def recv_cb(self, e):
         """
-        Callback para recibir datos ESP-NOW.
+        Callback para recibir y desencriptar datos ESP-NOW.
         """
         while True:
             mac, msg = self.e.irecv(0)
             if mac is None:
                 return
 
-            # Diccionario de acciones
-            acciones = {
-                "rele/set": self.controlar_rele,
-            }
+            try:
+                data = json.loads(msg)
+                iv_hex = data.get("iv")
+                encrypted_data_hex = data.get("data")
 
-            MessageProcessor.procesar_mensaje(self.mac_propia, mac, msg, acciones)
+                if iv_hex and encrypted_data_hex:
+                    # Desencriptar los datos
+                    decrypted_data = self.desencriptar_datos(iv_hex, encrypted_data_hex)
+                    print("Datos desencriptados:", decrypted_data)
+
+                    # Procesar el mensaje desencriptado
+                    acciones = {
+                        "rele/set": self.controlar_rele,
+                    }
+                    MessageProcessor.procesar_mensaje(self.mac_propia, mac, decrypted_data, acciones)
+
+            except Exception as ex:
+                print("Error procesando el mensaje encriptado:", ex)
+
+    def controlar_rele(self, estado):
+        """
+        Método abstracto para controlar el relé que debe ser implementado por las subclases.
+        """
+        raise NotImplementedError("Subclass must implement controlar_rele()")
