@@ -11,15 +11,14 @@ class ModuloReles(SensorBase):
         self.rele_state_3 = False
         self.rele_state_4 = False
     
-    def send_rele_state_encriptado(self):
+    def send_rele_state(self):
         for i in range(1, 5):
             data = {
                 "topic": f"sensor/rele/state/{i}",
                 "value": getattr(self, f"rele_state_{i}") #obtenemos el valor del estado del rele
             }
-            data_str = json.dumps(data)
-            self.e.send(self.peer_mac, data_str)
-            print("Mensaje enviado:", data_str)
+            self.send_encrypted_data(data)
+            print("Datos del sensor enviados:", data)
 
 
     def controlar_rele(self, rele_numero, estado):
@@ -35,7 +34,7 @@ class ModuloReles(SensorBase):
                 setattr(self, f"rele_state_{rele_numero}", False)
             else:
                 print("Valor incorrecto")
-            self.send_rele_state_encriptado()  # Actualiza y envía el estado del relé
+            self.send_rele_state()  # Actualiza y envía el estado del relé
         else:
             print("Número de relé inválido")
 

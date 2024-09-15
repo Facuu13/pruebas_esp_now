@@ -66,22 +66,3 @@ class SensorBase:
             }
 
             MessageProcessor.procesar_mensaje(self.mac_propia, mac, msg, acciones)
-
-
-    def send_sensor_data_encriptado(self):
-        """
-        Método abstracto que debe ser implementado por las subclases.
-        """
-        raise NotImplementedError("Subclass must implement send_sensor_data_encriptado()")
-    
-    def send_rele_state_encriptado(self):
-        """
-        Método abstracto que debe ser implementado por las subclases.
-        """
-        raise NotImplementedError("Subclass must implement send_rele_state_encriptado()")
-
-    def controlar_rele(self, estado):
-        """
-        Método abstracto para controlar el relé que debe ser implementado por las subclases.
-        """
-        raise NotImplementedError("Subclass must implement controlar_rele()")
