@@ -66,7 +66,7 @@ function cargarDatos() {
                         <div class="sensor-card">
                             <p><strong>Sensor: ${mac.split("/")[0]}</strong></p>
                             <p>Topic: ${topic}</p>
-                            <p><span class="sensor-value">${value}</span></p>
+                            <p><span class="sensor-value">Value: ${value}</span></p>
                         </div>`;
               sensorDataContainer.innerHTML += card;
             }
