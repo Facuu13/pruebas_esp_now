@@ -123,6 +123,10 @@ class ESPNowManager:
                 self.send(self.mensaje_clave)
                 print("Nuevo nodo detectado")
                 print("Nodo: ",mac.hex())
+                
+            elif info == "verificar_canal":
+                mensaje_confirmacion = json.dumps({"respuesta": "verificacion_exitosa"})
+                self.send(mensaje_confirmacion)
                 # Solo publicar en MQTT si estamos en modo CL
                 if self.modo_operacion == "CL":
                     self.mqtt_client.publish(self.topic_discovery, str(mac.hex()))

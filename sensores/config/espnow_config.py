@@ -4,6 +4,9 @@ import json
 
 import ubinascii
 import cryptolib
+import machine  # Para reiniciar el microcontrolador
+import time
+import json
 
 class ESPNowConfig:
     @staticmethod
@@ -49,7 +52,36 @@ class ESPNowConfig:
                         data = json.loads(msg)
                         if data.get("respuesta") == "canal_correcto":
                             print(f"Canal correcto encontrado: {canal}")
-                            return
+                            # Ahora enviar mensaje de verificación
+                            if ESPNowConfig.verificar_canal(e, peer_mac, key, iv):
+                                print("Canal verificado correctamente.")
+                                return
+                            else:
+                                print("Verificación fallida, reiniciando...")
+                                machine.reset()
                     except Exception as ex:
                         print("Error procesando el mensaje de respuesta:", ex)
             time.sleep(0.1)
+
+    @staticmethod
+    def verificar_canal(e, peer_mac, key, iv):
+        """
+        Envía un mensaje de verificación al nodo central para confirmar que el canal es correcto.
+        Si no hay respuesta en un tiempo determinado, retorna False.
+        """
+        mensaje = json.dumps({"palabra_clave": "verificar_canal"})
+        mensaje_cifrado = ESPNowConfig.cifrar_mensaje(mensaje, key, iv)
+        e.send(peer_mac, mensaje_cifrado)
+        print("Enviando mensaje de verificación...")
+
+        start_time = time.time()
+        while time.time() - start_time < 2:  # Esperar 2 segundos por una respuesta de verificación
+            mac, msg = e.irecv(0)
+            if mac and msg:
+                try:
+                    data = json.loads(msg)
+                    if data.get("respuesta") == "verificacion_exitosa":
+                        return True  # Verificación exitosa
+                except Exception as ex:
+                    print("Error procesando el mensaje de verificación:", ex)
+        return False  # No hubo respuesta o fue incorrecta
