@@ -39,10 +39,25 @@ class WiFiManager:
         ssid = self.config.get("ssid")
         password = self.config.get("password")
         self.sta.connect(ssid, password)
-        while not self.sta.isconnected():
-            time.sleep(0.1)
-        print("Conectado a:", ssid)
-        print("Dirección IP:", self.sta.ifconfig()[0])
+        print("Conectando cliente WiFi a:", ssid)
+        while True:
+            if (self.sta.status() == network.STAT_CONNECTING):
+                print(".", end='')
+                time.sleep(1)
+            elif (self.sta.status() == network.STAT_WRONG_PASSWORD):
+                print("Contraseña incorrecta")
+                break
+            elif (self.sta.status() == network.STAT_NO_AP_FOUND):
+                print("Red no encontrada")
+                break
+            elif (self.sta.status() == network.STAT_GOT_IP):
+                print("Conexion exitosa")
+                print("Dirección IP:", self.sta.ifconfig()[0])
+                break
+            else:
+                print("Error al conectar")
+                print("Status:", self.sta.status())
+                break
         self.sta.config(pm=self.sta.PM_NONE)
         print("Proxy corriendo en el canal:", self.sta.config("channel"))
 
