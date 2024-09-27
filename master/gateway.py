@@ -25,7 +25,7 @@ def mensaje_callback(topic, msg):
 
 # Inicialización
 wifi_manager = WiFiManager()
-modo = wifi_manager.config.get("mode", "CL")
+modo = wifi_manager.config.get("mode")
 
 cliente_id = wifi_manager.config.get("cliente_id")
 mqtt_broker = wifi_manager.config.get("mqtt_broker")
