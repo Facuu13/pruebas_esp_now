@@ -28,9 +28,8 @@ class SensorLM35(SensorBase):
                     "topic": "sensor/temp",
                     "value": temp
                 }
-            data_str = json.dumps(data)
-            self.e.send(self.peer_mac, data_str)
-            print("Mensaje enviado:", data_str)
+            self.send_encrypted_data(data)
+            print("Datos del sensor enviados:", data)
         else:
             print("Failed to read from sensor")
         time.sleep(2)

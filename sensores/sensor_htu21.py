@@ -7,7 +7,7 @@ class SensorHTU21(SensorBase):
     def __init__(self):
         super().__init__()
         #self.i2c = I2C(0, scl=Pin(22), sda=Pin(21), freq=100000) #ESP32
-        self.i2c = I2C(0, scl=Pin(4), sda=Pin(5), freq=100000) #ESP32M1
+        self.i2c = I2C(0, scl=Pin(4), sda=Pin(5), freq=100000) #ESP32C3M1
         self.addr = 0x40 # Dirección del dispositivo HTU21 en el bus I2C
 
     def _read(self, cmd):
@@ -40,9 +40,9 @@ class SensorHTU21(SensorBase):
                 "topic": "sensor/hum",
                 "value": hum
             }
-            data_str = json.dumps(data)
-            self.e.send(self.peer_mac, data_str)
-            print("Mensaje enviado:", data_str)
+            self.send_encrypted_data(data)
+            print("Datos del sensor enviados:", data)
+
             
             time.sleep(1)
             
@@ -50,9 +50,8 @@ class SensorHTU21(SensorBase):
                 "topic": "sensor/temp",
                 "value": temp
             }
-            data2_str = json.dumps(data2)
-            self.e.send(self.peer_mac, data2_str)
-            print("Mensaje enviado:", data2_str)
+            self.send_encrypted_data(data2)
+            print("Datos del sensor enviados:", data2)
             
         else:
             print("Failed to read from sensor")
