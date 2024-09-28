@@ -3,6 +3,7 @@
 import socket
 from micropython import alloc_emergency_exception_buf
 import json
+import machine
 
 received_data = {}
 
@@ -44,6 +45,65 @@ def handle_update_relay(cl, request_lines):
         response = {'status': 'success'}
     except Exception as e:
         print('Error:', e)
+        response = {'status': 'error', 'message': str(e)}
+    
+    response_body = json.dumps(response)
+    cl.send(b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + response_body.encode())
+
+def handle_get_config():
+    try:
+        with open('config/config.json', 'r') as f:
+            config = json.load(f)
+        response_body = json.dumps(config)
+        return f"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{response_body}".encode()
+    except Exception as e:
+        print(f"Error al leer config.json: {e}")
+        return b"HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nError interno del servidor"
+
+def handle_update_config(cl, request_lines):
+    try:
+        # Leer el cuerpo de la solicitud
+        body = request_lines[-1]
+        data = json.loads(body)
+        
+        # Validar los campos
+        campos_requeridos = [
+            "mode", "ssid", "password", "ap_ssid", "ap_password", 
+            "cliente_id", "mqtt_broker", "mqtt_user", "mqtt_pass", "puerto"
+        ]
+        
+        for campo in campos_requeridos:
+            if campo not in data:
+                raise ValueError(f"Falta el campo '{campo}'")
+        
+        # Validar 'mode'
+        if data['mode'] not in ["CL", "AP"]:
+            raise ValueError("El campo 'mode' solo puede ser 'CL' o 'AP'")
+        
+        # Validar 'puerto'
+        if not isinstance(data['puerto'], int):
+            raise ValueError("El campo 'puerto' debe ser un número entero")
+        
+        # Leer la configuración actual
+        with open('config/config.json', 'r') as f:
+            config = json.load(f)
+        
+        # Actualizar los campos
+        for campo in campos_requeridos:
+            config[campo] = data[campo]
+        
+        # Guardar la nueva configuración
+        with open('config/config.json', 'w') as f:
+            json.dump(config, f)
+        
+        # Responder al cliente
+        response = {'status': 'success'}
+        
+        # Reiniciar el dispositivo para aplicar la nueva configuración
+        machine.reset()
+        
+    except Exception as e:
+        print('Error actualizando configuración:', e)
         response = {'status': 'error', 'message': str(e)}
     
     response_body = json.dumps(response)
@@ -108,15 +168,23 @@ def handle_client(cl):
                 response = handle_root()
             elif path == b'/config':  # Ruta para la página de configuración
                 response = handle_config()
+            elif path == b'/get_config':  # Ruta para obtener la configuración actual
+                response = handle_get_config()
             elif path == b'/status':
                 response = handle_status()
             elif path == b'/data':
                 response = handle_data()
             else:
                 response = handle_static_file(path[1:].decode())
-        elif method == b'POST' and path == b'/update_relay':
-            handle_update_relay(cl, request_lines)
-            return
+        elif method == b'POST':
+            if path == b'/update_relay':
+                handle_update_relay(cl, request_lines)
+                return
+            elif path == b'/update_config':
+                handle_update_config(cl, request_lines)
+                return
+            else:
+                response = b"HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/plain\r\n\r\nMethod Not Allowed"
         else:
             response = b"HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/plain\r\n\r\nMethod Not Allowed"
 
