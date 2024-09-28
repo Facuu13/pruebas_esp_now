@@ -59,6 +59,15 @@ def handle_root():
         print(f"Error al leer index.html: {e}")
         return b"HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nError interno del servidor"
 
+def handle_config():
+    try:
+        with open('frontend/config.html', 'r') as f:
+            content = f.read()
+        return f"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n{content}".encode()
+    except Exception as e:
+        print(f"Error al leer config.html: {e}")
+        return b"HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nError interno del servidor"
+
 def handle_status():
     return b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nStatus: OK"
 
@@ -97,6 +106,8 @@ def handle_client(cl):
         if method == b'GET':
             if path == b'/':
                 response = handle_root()
+            elif path == b'/config':  # Ruta para la página de configuración
+                response = handle_config()
             elif path == b'/status':
                 response = handle_status()
             elif path == b'/data':
