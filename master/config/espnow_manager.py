@@ -9,7 +9,7 @@ import ubinascii
 
 
 class ESPNowManager:
-    def __init__(self, peer_mac, mensaje_clave, modo_operacion="CL"):
+    def __init__(self, peer_mac, mensaje_clave, modo_operacion="AP"):
         self.peer_mac = peer_mac
         self.mensaje_clave = mensaje_clave
         self.modo_operacion = modo_operacion  # Almacena el modo de operación
