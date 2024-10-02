@@ -62,11 +62,13 @@ function cargarDatos() {
               releDataContainer.innerHTML += card;
             } else {
               // Para otros tipos de sensores, simplemente mostrar el valor
+              const timestamp = new Date().toLocaleString(); // Generar el timestamp
               const card = `
                         <div class="sensor-card">
                             <p><strong>Sensor: ${mac.split("/")[0]}</strong></p>
                             <p>Topic: ${topic}</p>
-                            <p><span class="sensor-value">Value: ${value}</span></p>
+                            <p><span class="sensor-value">Valor: ${value}</span></p>
+                            <p><span class="timestamp">Última Medición: ${timestamp}</span></p>
                         </div>`;
               sensorDataContainer.innerHTML += card;
             }
