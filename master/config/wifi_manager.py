@@ -77,7 +77,7 @@ class WiFiManager:
         ap_ssid = self.config.get("ap_ssid", "ESP32_AP")
         ap_password = self.config.get("ap_password", "12345678")
         self.ap.active(True)
-        self.ap.config(essid=ap_ssid, password=ap_password)
+        self.ap.config(essid=ap_ssid, password=ap_password,authmode=network.AUTH_WPA2_PSK)
         print("Punto de acceso iniciado")
         print("SSID:", ap_ssid)
         print("Contraseña:", ap_password)
