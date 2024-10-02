@@ -3,6 +3,8 @@ from machine import ADC, Pin
 import json
 from config.network_espnow import SensorBase
 
+modelo = 'LM35'
+
 class SensorLM35(SensorBase):
     def __init__(self):
         super().__init__()
@@ -26,7 +28,8 @@ class SensorLM35(SensorBase):
         if temp is not None:
             data = {
                     "topic": "sensor/temp",
-                    "value": temp
+                    "value": temp,
+                    "modelo": modelo
                 }
             self.send_encrypted_data(data)
             print("Datos del sensor enviados:", data)

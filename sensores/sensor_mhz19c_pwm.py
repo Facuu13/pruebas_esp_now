@@ -3,6 +3,7 @@ from machine import Pin, time_pulse_us
 import json
 from config.network_espnow import SensorBase
 
+modelo = 'MHZ19C'
 class SensorMHZ19PWM(SensorBase):
     def __init__(self):
         super().__init__()
@@ -34,7 +35,8 @@ class SensorMHZ19PWM(SensorBase):
         if co2_concentration is not None:
             data = {
                 "topic": "sensor/co2",
-                "value": co2_concentration
+                "value": co2_concentration,
+                "modelo": modelo
             }
             self.send_encrypted_data(data)
             print("Datos del sensor enviados:", data)

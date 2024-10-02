@@ -3,6 +3,8 @@ from machine import Pin, I2C
 import json
 from config.network_espnow import SensorBase
 
+modelo = 'HTU21'
+
 class SensorHTU21(SensorBase):
     def __init__(self):
         super().__init__()
@@ -38,7 +40,8 @@ class SensorHTU21(SensorBase):
         if hum and temp is not None:
             data = {
                 "topic": "sensor/hum",
-                "value": hum
+                "value": hum,
+                "modelo": modelo
             }
             self.send_encrypted_data(data)
             print("Datos del sensor enviados:", data)
@@ -48,7 +51,8 @@ class SensorHTU21(SensorBase):
             
             data2 = {
                 "topic": "sensor/temp",
-                "value": temp
+                "value": temp,
+                "modelo": modelo
             }
             self.send_encrypted_data(data2)
             print("Datos del sensor enviados:", data2)
