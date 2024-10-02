@@ -47,7 +47,7 @@ function cargarDatos() {
           sensors.forEach((sensor) => {
             const [mac, topic, value] = sensor.split("\n");
             let isChecked = value.includes("True") ? "checked" : "";
-
+            const timestamp = new Date().toLocaleString(); // Generar el timestamp
             // Crear switch para sensor/rele/state
             if (topic.includes("sensor/rele/state")) {
               const card = `
@@ -58,11 +58,11 @@ function cargarDatos() {
                             <input type="checkbox" ${isChecked} onclick="toggleRelay('${mac}', '${topic}', this)">
                                 <span class="slider round"></span>
                             </label>
+                            <p><span class="timestamp">Último Estado: ${timestamp}</span></p>
                         </div>`;
               releDataContainer.innerHTML += card;
             } else {
               // Para otros tipos de sensores, simplemente mostrar el valor
-              const timestamp = new Date().toLocaleString(); // Generar el timestamp
               const card = `
                         <div class="sensor-card">
                             <p><strong>Sensor: ${mac.split("/")[0]}</strong></p>
