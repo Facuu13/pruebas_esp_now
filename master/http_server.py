@@ -142,6 +142,7 @@ def handle_data():
         response += f"{mac}\n"
         response += f"{data['topic']}\n"
         response += f"{data['value']}\n"
+        response += f"{data['modelo']}\n"
         response += "\n"
 
     return response.encode()

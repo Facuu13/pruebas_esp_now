@@ -106,6 +106,7 @@ class ESPNowManager:
             info = data.get("palabra_clave")
             topic = data.get("topic")
             value = data.get("value")
+            modelo = data.get("modelo")
             if topic and value is not None:
                 new_mac = mac.hex()
                 new_topic = f"{new_mac}/{topic}"
@@ -114,6 +115,7 @@ class ESPNowManager:
                 received_data[new_topic] = {
                     "topic": topic,
                     "value": value,
+                    "modelo": modelo
                     }
                 # Solo publicar en MQTT si estamos en modo CL
                 if self.modo_operacion == "CL":

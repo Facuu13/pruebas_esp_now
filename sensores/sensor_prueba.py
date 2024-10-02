@@ -3,6 +3,8 @@ from config.network_espnow import SensorBase
 import json
 import machine
 
+modelo = 'PRUEBA'
+
 class SensorPrueba(SensorBase):
     def __init__(self):
         super().__init__()
@@ -13,7 +15,8 @@ class SensorPrueba(SensorBase):
         """
         data = {
             "topic": "sensor/prueba",
-            "value": dato
+            "value": dato,
+            "modelo": modelo
         }
 
         # Utilizamos el método general de la clase base para cifrar y enviar los datos
