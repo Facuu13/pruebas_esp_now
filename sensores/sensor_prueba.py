@@ -3,7 +3,7 @@ from config.network_espnow import SensorBase
 import json
 import machine
 
-modelo = 'PRUEBA'
+modelo = 'DHT11'
 
 class SensorPrueba(SensorBase):
     def __init__(self):
