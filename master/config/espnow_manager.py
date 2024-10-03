@@ -8,8 +8,9 @@ import cryptolib
 import ubinascii
 
 
+
 class ESPNowManager:
-    def __init__(self, peer_mac, mensaje_clave, modo_operacion):
+    def __init__(self, peer_mac, mensaje_clave, modo_operacion,hora):
         self.peer_mac = peer_mac
         self.mensaje_clave = mensaje_clave
         self.modo_operacion = modo_operacion  # Almacena el modo de operación
@@ -18,6 +19,7 @@ class ESPNowManager:
         self.topic_discovery = "/discovery"
         self.key = b"1234567890123456"
         self.iv = b"ivfixed987654321"  # Debe tener exactamente 16 bytes
+        self.hora = hora
     
     def activar_espNow(self):
         e = espnow.ESPNow()
@@ -107,6 +109,7 @@ class ESPNowManager:
             topic = data.get("topic")
             value = data.get("value")
             modelo = data.get("modelo")
+            hora_actual = self.hora.devolver_hora_actual()  # Obtener la hora actual
             if topic and value is not None:
                 new_mac = mac.hex()
                 new_topic = f"{new_mac}/{topic}"
@@ -115,7 +118,8 @@ class ESPNowManager:
                 received_data[new_topic] = {
                     "topic": topic,
                     "value": value,
-                    "modelo": modelo
+                    "modelo": modelo,
+                    "hora": hora_actual
                     }
                 # Solo publicar en MQTT si estamos en modo CL
                 if self.modo_operacion == "CL":

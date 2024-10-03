@@ -45,7 +45,7 @@ function cargarDatos() {
           const sensors = data.trim().split("\n\n"); // Separar cada conjunto de datos
 
           sensors.forEach((sensor) => {
-            const [mac, topic, value, modelo] = sensor.split("\n");
+            const [mac, topic, value, modelo, hora] = sensor.split("\n");
             let isChecked = value.includes("True") ? "checked" : "";
             const timestamp = new Date().toLocaleString(); // Generar el timestamp
             // Crear switch para sensor/rele/state
@@ -68,7 +68,7 @@ function cargarDatos() {
                             <p><strong>Sensor: ${mac.split("/")[0]}</strong></p>
                             <p>Topic: ${topic}</p>
                             <p><span class="sensor-value">Valor: ${value}</span></p>
-                            <p><span class="timestamp">Última Medición: ${timestamp}</span></p>
+                            <p><span class="timestamp">Última Medición: ${hora}</span></p>
                             <p><span class="modelo">Modelo sensor: ${modelo}</span></p>
                         </div>`;
               sensorDataContainer.innerHTML += card;
