@@ -63,6 +63,10 @@ class ESPNowConfig:
                         print("Error procesando el mensaje de respuesta:", ex)
             time.sleep(0.1)
 
+        # Si no se encontró el canal correcto después de todos los intentos
+        print("No se encontró el canal correcto. Reiniciando...")
+        machine.reset()
+
     @staticmethod
     def verificar_canal(e, peer_mac, key, iv):
         """
