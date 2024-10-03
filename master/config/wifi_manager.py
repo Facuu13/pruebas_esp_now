@@ -103,7 +103,8 @@ class WiFiManager:
 
     def set_rtc_from_ntp(self):
         """
-        Sincroniza la hora del RTC usando el servidor NTP.
+        Sincroniza la hora del RTC usando el servidor NTP de Google.
+        Ajusta la hora a la zona horaria de Argentina (UTC-3).
         """
         try:
             print("Sincronizando con NTP...")
@@ -114,9 +115,21 @@ class WiFiManager:
             # Sincronizamos la hora
             ntptime.settime()
             
-            # Obtenemos la hora actual del RTC
+            # Obtenemos la hora actual del RTC y ajustamos UTC-3
             rtc = machine.RTC()
-            print("Hora sincronizada desde NTP:", rtc.datetime())
+            fecha_hora = list(rtc.datetime())
+            
+            # Ajustar la hora para UTC-3 (restar 3 horas)
+            fecha_hora[4] = (fecha_hora[4] - 3) % 24  # Ajustar la hora
+
+            # Si se cruza la medianoche, ajustar también el día
+            if fecha_hora[4] > rtc.datetime()[4]:
+                fecha_hora[2] -= 1  # Restar un día si cruzamos medianoche
+            
+            # Aplicar el nuevo datetime ajustado
+            rtc.datetime(tuple(fecha_hora))
+
+            print("Hora sincronizada desde Argentina NTP:", rtc.datetime())
         except Exception as e:
             print("Error al sincronizar RTC desde NTP:", e)
 
