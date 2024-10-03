@@ -58,7 +58,7 @@ function cargarDatos() {
                             <input type="checkbox" ${isChecked} onclick="toggleRelay('${mac}', '${topic}', this)">
                                 <span class="slider round"></span>
                             </label>
-                            <p><span class="timestamp">Último Estado: ${timestamp}</span></p>
+                            <p><span class="timestamp">Último Estado: ${hora}</span></p>
                         </div>`;
               releDataContainer.innerHTML += card;
             } else {
