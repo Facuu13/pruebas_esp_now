@@ -26,9 +26,10 @@ class SensorLM35(SensorBase):
     def send_sensor_data(self):
         temp = self.read_temperature()
         if temp is not None:
+            temp_value = str(temp) + " C"
             data = {
                     "topic": "sensor/temp",
-                    "value": temp,
+                    "value": temp_value,
                     "modelo": modelo
                 }
             self.send_encrypted_data(data)

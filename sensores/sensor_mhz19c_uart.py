@@ -33,9 +33,12 @@ class SensorMHZ19UART(SensorBase):
     def send_sensor_data(self):
         co2_concentration = self.read_mhz19c()
         if co2_concentration is not None:
+
+            value = str(co2_concentration) + " ppm"
+
             data = {
                 "topic": "sensor/co2",
-                "value": co2_concentration,
+                "value": value,
                 "modelo": modelo
             }
             self.send_encrypted_data(data)
