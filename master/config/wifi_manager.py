@@ -134,11 +134,12 @@ class WiFiManager:
             print("Error al sincronizar RTC desde NTP:", e)
 
 
-    def imprimir_hora_actual(self):
+    def devolver_hora_actual(self):
         """
-        Imprime la hora actual del RTC.
+        Devuelve la hora actual del RTC.
         """
         # x es dia de la semana, que no se usa
         rtc = machine.RTC()
         anio, mes, dia,x, hora, minuto, segundo, *_ = rtc.datetime()
-        print(f"Hora actual: {dia}/{mes}/{anio} {hora}:{minuto}:{segundo}")
+        hora_actual = f"Hora actual: {dia}/{mes}/{anio} {hora}:{minuto}:{segundo}"
+        return hora_actual
