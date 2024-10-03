@@ -3,7 +3,9 @@ import json
 from config.espnow_manager import ESPNowManager
 from config.wifi_manager import WiFiManager
 from config.mqtt_manager import MQTTManager
-import http_server  
+import http_server 
+
+import uasyncio as asyncio
 
 
 peer_mac = b'\xff' * 6
@@ -51,12 +53,23 @@ print(hora_actual)
 http_server.set_espnow_manager(espnow_manager)
 
 # Iniciar servidor HTTP
-http_server.start_server()  
+http_server.start_server()
 
-while True:
-    try:
-        if modo == 'CL' and conectado_a_internet:
-            mqtt_manager.check_msg()  # Revisa si hay mensajes nuevos
-        time.sleep(1)  # Espera un poco antes de la siguiente verificación
-    except Exception as e:
-        print(f"Error al recibir mensajes: {e}")
+
+
+async def mqtt_loop():
+    while True:
+        mqtt_manager.check_msg()  # Revisa si hay mensajes nuevos
+        await asyncio.sleep(1)    # Espera sin bloquear otras tareas
+
+async def main():
+
+    # Si estás en modo CL, también ejecuta el loop MQTT en paralelo
+    if modo == 'CL' and conectado_a_internet:
+        asyncio.create_task(mqtt_loop())
+
+    while True:
+        await asyncio.sleep(1)  # Mantiene el loop principal activo
+
+# Ejecuta el loop principal de asyncio
+asyncio.run(main())
