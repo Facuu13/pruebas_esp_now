@@ -44,6 +44,7 @@ elif modo == 'AP':
 else:
     espnow_manager = ESPNowManager(peer_mac, mensaje_clave,modo_operacion='AP')
 
+wifi_manager.imprimir_hora_actual()
 
 # Pasamos espnow_manager al servidor HTTP
 http_server.set_espnow_manager(espnow_manager)

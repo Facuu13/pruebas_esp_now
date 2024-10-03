@@ -1,6 +1,8 @@
 import network
 import time
 import json
+import ntptime
+import machine
 
 class WiFiManager:
     def __init__(self, config_path='config/config.json'):
@@ -57,6 +59,7 @@ class WiFiManager:
                 print("Conexion exitosa")
                 print("Dirección IP:", self.sta.ifconfig()[0])
                 self.conectado_wifi = True
+                self.set_rtc_from_ntp()
                 break
             else:
                 print("Error al conectar")
@@ -71,7 +74,7 @@ class WiFiManager:
         print("Cambiando a modo AP")
         self.conectado_wifi = False
         self.iniciar_modo_ap()
-
+        
 
     def iniciar_modo_ap(self):
         ap_ssid = self.config.get("ap_ssid", "ESP32_AP")
@@ -82,3 +85,47 @@ class WiFiManager:
         print("SSID:", ap_ssid)
         print("Contraseña:", ap_password)
         print(self.ap.ifconfig())
+        self.set_rtc_from_json() #setear hora del rtc
+
+    
+    def set_rtc_from_json(self):
+        """
+        Sincroniza la hora del RTC desde el archivo JSON (modo AP).
+        """
+        try:
+            with open('config/config_hora_ap.json', 'r') as f:
+                config = json.load(f)
+            rtc = machine.RTC()
+            rtc.datetime((config['year'], config['month'], config['day'], 0, config['hour'], config['minute'], config['second'], 0))
+            print("RTC configurado desde archivo JSON")
+        except Exception as e:
+            print("Error al configurar RTC desde archivo JSON:", e)
+
+    def set_rtc_from_ntp(self):
+        """
+        Sincroniza la hora del RTC usando el servidor NTP.
+        """
+        try:
+            print("Sincronizando con NTP...")
+            
+            # Configuramos el servidor NTP 
+            ntptime.host = "time.google.com"
+            
+            # Sincronizamos la hora
+            ntptime.settime()
+            
+            # Obtenemos la hora actual del RTC
+            rtc = machine.RTC()
+            print("Hora sincronizada desde NTP:", rtc.datetime())
+        except Exception as e:
+            print("Error al sincronizar RTC desde NTP:", e)
+
+
+    def imprimir_hora_actual(self):
+        """
+        Imprime la hora actual del RTC.
+        """
+        # x es dia de la semana, que no se usa
+        rtc = machine.RTC()
+        anio, mes, dia,x, hora, minuto, segundo, *_ = rtc.datetime()
+        print(f"Hora actual: {dia}/{mes}/{anio} {hora}:{minuto}:{segundo}")
