@@ -1,8 +1,6 @@
 from .wifi_config import WiFiConfig
 from .espnow_config import ESPNowConfig
 from .message_processor import MessageProcessor
-import cryptolib
-import ubinascii
 import json
 
 # Claves constantes
@@ -13,24 +11,25 @@ class SensorBase:
     def __init__(self):
         self.peer_mac = b'\xff' * 6
         self.sta, self.ap = WiFiConfig.wifi_reset()
-        self.mac_propia = (self.sta.config('mac')).hex()  # obtenemos la mac del chip
-        self.e = ESPNowConfig.setup_espnow(self.peer_mac) # Configuración de ESP-NOW
+        self.mac_propia = (self.sta.config('mac')).hex()  # Obtenemos la MAC del chip
+        self.e = ESPNowConfig.setup_espnow(self.peer_mac)  # Configuración de ESP-NOW
         ESPNowConfig.buscar_canal(self.e, self.sta, self.peer_mac, AES_KEY, AES_IV)
-        self.e.irq(self.recv_cb) # Configurar la interrupción para recibir mensajes
+        self.e.irq(self.recv_cb)  # Configurar la interrupción para recibir mensajes
         
-    
     def send_encrypted_data(self, data):
         """
         Cifra y envía los datos por ESP-NOW.
         """
-        data_str = json.dumps(data)  # Convertir los datos a cadena JSON
-        
-        # Cifrar los datos usando ESPNowConfig
-        encrypted_payload = ESPNowConfig.cifrar_mensaje(data_str, AES_KEY, AES_IV)
-        
-        # Enviar mensaje cifrado
+        encrypted_payload = self.encrypt_and_prepare(data)
         self.e.send(self.peer_mac, encrypted_payload)
         print("Mensaje encriptado enviado:", encrypted_payload)
+
+    def encrypt_and_prepare(self, data):
+        """
+        Convierte los datos a JSON y los cifra.
+        """
+        data_str = json.dumps(data)  # Convertir los datos a cadena JSON
+        return ESPNowConfig.cifrar_mensaje(data_str, AES_KEY, AES_IV)
 
     def recv_cb(self, e):
         """
@@ -40,25 +39,29 @@ class SensorBase:
             mac, msg = self.e.irecv(0)
             if mac is None:
                 return
+            self.process_received_message(mac, msg)
 
-            try:
-                data = json.loads(msg)
-                iv_hex = data.get("iv")
-                encrypted_data_hex = data.get("data")
+    def process_received_message(self, mac, msg):
+        """
+        Procesa el mensaje recibido y realiza la acción correspondiente.
+        """
+        try:
+            data = json.loads(msg)
+            iv_hex = data.get("iv")
+            encrypted_data_hex = data.get("data")
 
-                if iv_hex and encrypted_data_hex:
-                    # Desencriptar los datos usando ESPNowConfig
-                    decrypted_data = ESPNowConfig.desencriptar_mensaje(iv_hex, encrypted_data_hex, AES_KEY)
-                    print("Datos desencriptados:", decrypted_data)
+            if iv_hex and encrypted_data_hex:
+                decrypted_data = ESPNowConfig.desencriptar_mensaje(iv_hex, encrypted_data_hex, AES_KEY)
+                print("Datos desencriptados:", decrypted_data)
 
-                    # Procesar el mensaje desencriptado
-                    acciones = {
-                        "rele/set": self.controlar_rele,
-                    }
-                    MessageProcessor.procesar_mensaje(self.mac_propia, mac, decrypted_data, acciones)
+                # Procesar el mensaje desencriptado
+                acciones = {
+                    "rele/set": self.controlar_rele,
+                }
+                MessageProcessor.procesar_mensaje(self.mac_propia, mac, decrypted_data, acciones)
 
-            except Exception as ex:
-                print("Error procesando el mensaje encriptado:", ex)
+        except Exception as ex:
+            print("Error procesando el mensaje encriptado:", ex)
 
     def controlar_rele(self, estado):
         """
