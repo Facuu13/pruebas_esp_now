@@ -14,9 +14,9 @@ class SensorBase:
         self.peer_mac = b'\xff' * 6
         self.sta, self.ap = WiFiConfig.wifi_reset()
         self.mac_propia = (self.sta.config('mac')).hex()  # obtenemos la mac del chip
-        self.e = ESPNowConfig.setup_espnow(self.peer_mac)
+        self.e = ESPNowConfig.setup_espnow(self.peer_mac) # Configuración de ESP-NOW
         ESPNowConfig.buscar_canal(self.e, self.sta, self.peer_mac, AES_KEY, AES_IV)
-        self.e.irq(self.recv_cb)
+        self.e.irq(self.recv_cb) # Configurar la interrupción para recibir mensajes
         
     
     def cifrar_datos(self, data_str):

@@ -9,7 +9,7 @@ import time
 import json
 
 class ESPNowConfig:
-
+    @staticmethod
     def setup_espnow(peer_mac):
         """
         Configura ESP-NOW y añade el peer MAC.
@@ -19,7 +19,7 @@ class ESPNowConfig:
         e.add_peer(peer_mac)
         return e
     
-
+    @staticmethod
     def cifrar_mensaje(mensaje, key, iv):
         """
         Cifra un mensaje usando AES en modo CBC.
@@ -34,7 +34,7 @@ class ESPNowConfig:
 
         return json.dumps({"iv": iv_hex, "data": encrypted_message_hex})
 
-
+    @staticmethod
     def buscar_canal(e, sta, peer_mac, key, iv):
         """
         Busca el canal correcto enviando mensajes de prueba en cada canal.
@@ -68,7 +68,7 @@ class ESPNowConfig:
         print("No se encontró el canal correcto. Reiniciando...")
         machine.reset()
 
-
+    @staticmethod
     def verificar_canal(e, peer_mac, key, iv):
         """
         Envía un mensaje de verificación al nodo central para confirmar que el canal es correcto.
