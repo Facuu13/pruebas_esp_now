@@ -19,6 +19,7 @@ class ESPNowConfig:
         e.add_peer(peer_mac)
         return e
     
+    @staticmethod
     def cifrar_mensaje(mensaje, key, iv):
         """
         Cifra un mensaje usando AES en modo CBC.
