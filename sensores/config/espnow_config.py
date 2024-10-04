@@ -33,6 +33,19 @@ class ESPNowConfig:
         encrypted_message_hex = ubinascii.hexlify(encrypted_message).decode('utf-8')
 
         return json.dumps({"iv": iv_hex, "data": encrypted_message_hex})
+    
+    @staticmethod
+    def desencriptar_mensaje(iv_hex, encrypted_data_hex, key):
+        """
+        Desencripta los datos usando AES en modo CBC.
+        """
+        iv = ubinascii.unhexlify(iv_hex)  # Convertir IV de hex a bytes
+        encrypted_data = ubinascii.unhexlify(encrypted_data_hex)  # Convertir datos cifrados de hex a bytes
+
+        aes = cryptolib.aes(key, 2, iv)  # Crear instancia AES en modo CBC con el IV recibido
+        decrypted_data_padded = aes.decrypt(encrypted_data)  # Desencriptar datos
+        decrypted_data = decrypted_data_padded.rstrip()  # Eliminar padding
+        return decrypted_data.decode('utf-8')
 
     @staticmethod
     def buscar_canal(e, sta, peer_mac, key, iv):
