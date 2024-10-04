@@ -4,61 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuración</title>
-    <link rel="stylesheet" href="frontend/styles.css">
+    <link rel="stylesheet" href="frontend/config.css">
 </head>
 <body>
-    <h1>Página de Configuración</h1>
-    <form id="config-form">
-        <label for="mode">Modo de Operación:</label>
-        <select id="mode" name="mode">
-            <option value="CL">Cliente (CL)</option>
-            <option value="AP">Punto de Acceso (AP)</option>
-        </select>
-        <br><br>
+    <div class="container">
+        <h1>Página de Configuración</h1>
+        <form id="config-form">
+            <div class="form-group">
+                <label for="mode">Modo de Operación:</label>
+                <select id="mode" name="mode">
+                    <option value="CL">Cliente (CL)</option>
+                    <option value="AP">Punto de Acceso (AP)</option>
+                </select>
+            </div>
 
-        <label for="ssid">SSID:</label>
-        <input type="text" id="ssid" name="ssid" required>
-        <br><br>
+            <div class="form-group">
+                <label for="ssid">SSID:</label>
+                <input type="text" id="ssid" name="ssid" required>
+            </div>
 
-        <label for="password">Contraseña:</label>
-        <input type="text" id="password" name="password" required>
-        <br><br>
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="text" id="password" name="password" required>
+            </div>
 
-        <label for="ap_ssid">SSID del AP:</label>
-        <input type="text" id="ap_ssid" name="ap_ssid" required>
-        <br><br>
+            <div class="form-group">
+                <label for="ap_ssid">SSID del AP:</label>
+                <input type="text" id="ap_ssid" name="ap_ssid" required>
+            </div>
 
-        <label for="ap_password">Contraseña del AP:</label>
-        <input type="text" id="ap_password" name="ap_password" required>
-        <br><br>
+            <div class="form-group">
+                <label for="ap_password">Contraseña del AP:</label>
+                <input type="text" id="ap_password" name="ap_password" required>
+            </div>
 
-        <label for="cliente_id">Cliente ID:</label>
-        <input type="text" id="cliente_id" name="cliente_id" required>
-        <br><br>
+            <div class="form-group">
+                <label for="cliente_id">Cliente ID:</label>
+                <input type="text" id="cliente_id" name="cliente_id" required>
+            </div>
 
-        <label for="mqtt_broker">MQTT Broker:</label>
-        <input type="text" id="mqtt_broker" name="mqtt_broker" required>
-        <br><br>
+            <div class="form-group">
+                <label for="mqtt_broker">MQTT Broker:</label>
+                <input type="text" id="mqtt_broker" name="mqtt_broker" required>
+            </div>
 
-        <label for="mqtt_user">MQTT Usuario:</label>
-        <input type="text" id="mqtt_user" name="mqtt_user" required>
-        <br><br>
+            <div class="form-group">
+                <label for="mqtt_user">MQTT Usuario:</label>
+                <input type="text" id="mqtt_user" name="mqtt_user" required>
+            </div>
 
-        <label for="mqtt_pass">MQTT Contraseña:</label>
-        <input type="text" id="mqtt_pass" name="mqtt_pass" required>
-        <br><br>
+            <div class="form-group">
+                <label for="mqtt_pass">MQTT Contraseña:</label>
+                <input type="text" id="mqtt_pass" name="mqtt_pass" required>
+            </div>
 
-        <label for="puerto">Puerto:</label>
-        <input type="number" id="puerto" name="puerto" required>
-        <br><br>
+            <div class="form-group">
+                <label for="puerto">Puerto:</label>
+                <input type="number" id="puerto" name="puerto" required>
+            </div>
 
-        <button type="submit" class="buttons">Guardar Configuración</button>
-    </form>
+            <button type="submit" class="btn">Guardar Configuración</button>
+            <button type="button" onclick="window.location.href='/'" class="btn">Volver a Inicio</button>
 
-    <!-- Botón para regresar a la página principal -->
-    <button onclick="window.location.href='/'" class="buttons">Volver a Inicio</button>
-
-    <p id="response-msg" style="color: green; display: none;"></p>
+            <p id="response-msg" style="color: green; display: none;"></p>
+        </form>
+    </div>
 
     <script src="frontend/config.js"></script>
 </body>
