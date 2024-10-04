@@ -5,15 +5,17 @@ import cryptolib
 import ubinascii
 import json
 
+# Claves constantes
+AES_KEY = b"1234567890123456"  # Clave AES de 16 bytes para todos los sensores
+AES_IV = b"ivfixed123456789"    # Debe tener exactamente 16 bytes
+
 class SensorBase:
     def __init__(self):
         self.peer_mac = b'\xff' * 6
         self.sta, self.ap = WiFiConfig.wifi_reset()
         self.mac_propia = (self.sta.config('mac')).hex()  # obtenemos la mac del chip
         self.e = ESPNowConfig.setup_espnow(self.peer_mac)
-        self.key = b"1234567890123456"  # Clave AES de 16 bytes para todos los sensores
-        self.iv = b"ivfixed123456789"  # Debe tener exactamente 16 bytes
-        ESPNowConfig.buscar_canal(self.e, self.sta, self.peer_mac, self.key, self.iv)
+        ESPNowConfig.buscar_canal(self.e, self.sta, self.peer_mac, AES_KEY, AES_IV)
         self.e.irq(self.recv_cb)
         
     
@@ -24,10 +26,10 @@ class SensorBase:
         pad = 16 - (len(data_str) % 16)
         data_str_padded = data_str + ' ' * pad  # Añadir padding
 
-        aes = cryptolib.aes(self.key, 2, self.iv)  # Crear instancia AES en modo CBC
+        aes = cryptolib.aes(AES_KEY, 2, AES_IV)  # Crear instancia AES en modo CBC
         
         encrypted_data = aes.encrypt(data_str_padded)  # Cifrar datos
-        return self.iv, encrypted_data  # Devolver IV y datos cifrados
+        return AES_IV, encrypted_data  # Devolver IV y datos cifrados
     
     def send_encrypted_data(self, data):
         """
@@ -59,7 +61,7 @@ class SensorBase:
         iv = ubinascii.unhexlify(iv_hex)  # Convertir IV de hex a bytes
         encrypted_data = ubinascii.unhexlify(encrypted_data_hex)  # Convertir datos cifrados de hex a bytes
 
-        aes = cryptolib.aes(self.key, 2, iv)  # Crear instancia AES en modo CBC con el IV recibido
+        aes = cryptolib.aes(AES_KEY, 2, iv)  # Crear instancia AES en modo CBC con el IV recibido
         decrypted_data_padded = aes.decrypt(encrypted_data)  # Desencriptar datos
         decrypted_data = decrypted_data_padded.rstrip()  # Eliminar padding
         return decrypted_data.decode('utf-8')
