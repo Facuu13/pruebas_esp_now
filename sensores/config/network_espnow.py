@@ -63,7 +63,7 @@ class SensorBase:
         except Exception as ex:
             print("Error procesando el mensaje encriptado:", ex)
 
-    def controlar_rele(self, estado):
+    def controlar_rele(self, rele_numero, estado):
         """
         Método abstracto para controlar el relé que debe ser implementado por las subclases.
         """
