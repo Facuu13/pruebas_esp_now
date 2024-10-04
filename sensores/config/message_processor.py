@@ -3,7 +3,7 @@ import re
 
 # /sensor/f412fa80a7f0/rele/set/1
 class MessageProcessor:
-    @staticmethod
+
     def extraer_mac(topic):
         """
         Extrae el mac del topic que sigue a /sensor/
@@ -13,7 +13,7 @@ class MessageProcessor:
             return match.group(1)
         return None
 
-    @staticmethod
+
     def extraer_accion(topic):
         """
         Extrae la acción del topic que sigue a la MAC.
@@ -23,7 +23,7 @@ class MessageProcessor:
             return match.group(1)
         return None
 
-    @staticmethod
+
     def validar_mac(mac_propia, identifier):
         """
         Valida si el identifier es igual a la mac_propia.
@@ -35,7 +35,7 @@ class MessageProcessor:
             print("Diferente MAC")
             return False
     
-    @staticmethod
+
     def extraer_numero_rele(topic):
         """
         Extrae el número del relé desde el topic.
@@ -45,7 +45,7 @@ class MessageProcessor:
             return int(match.group(1))
         return None
 
-    @staticmethod
+
     def procesar_mensaje(mac_propia, mac, msg, acciones):
         """
         Procesa el mensaje recibido, convirtiéndolo en un formato adecuado.
