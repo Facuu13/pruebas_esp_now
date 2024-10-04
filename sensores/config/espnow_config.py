@@ -64,6 +64,26 @@ class ESPNowConfig:
             return None
 
     @staticmethod
+    def recibir_mensaje(e, timeout):
+        """
+        Recibe un mensaje de ESP-NOW dentro de un tiempo de espera determinado.
+        Devuelve el MAC y el mensaje procesado o None si no hay respuesta.
+        """
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            mac, msg = e.irecv(0)
+            if mac and msg:
+                try:
+                    return mac, json.loads(msg)
+                except json.JSONDecodeError:
+                    print("Error decodificando el mensaje JSON.")
+                    return None
+                except Exception as ex:
+                    print(f"Error procesando el mensaje: {ex}")
+                    return None
+        return None, None  # Si no se recibe nada
+
+    @staticmethod
     def buscar_canal(e, sta, peer_mac, key, iv):
         """
         Busca el canal correcto enviando mensajes de prueba en cada canal.
@@ -73,7 +93,7 @@ class ESPNowConfig:
                 sta.config(channel=canal)
                 mensaje = json.dumps({"palabra_clave": "buscar_canal"})
                 mensaje_cifrado = ESPNowConfig.cifrar_mensaje(mensaje, key, iv)
-                
+
                 if mensaje_cifrado:
                     e.send(peer_mac, mensaje_cifrado)
                     print(f"Enviando mensaje de prueba en el canal: {canal}")
@@ -81,25 +101,15 @@ class ESPNowConfig:
                     print(f"Error cifrando mensaje para el canal {canal}.")
                     continue
 
-                start_time = time.time()
-                while time.time() - start_time < 1:  # Esperar 1 segundo por una respuesta
-                    mac, msg = e.irecv(0)
-                    if mac and msg:
-                        try:
-                            data = json.loads(msg)
-                            if data.get("respuesta") == "canal_correcto":
-                                print(f"Canal correcto encontrado: {canal}")
-                                if ESPNowConfig.verificar_canal(e, peer_mac, key, iv):
-                                    print("Canal verificado correctamente.")
-                                    return
-                                else:
-                                    print("Verificación fallida, reiniciando...")
-                                    machine.reset()
-                        except json.JSONDecodeError:
-                            print("Error decodificando el mensaje JSON.")
-                        except Exception as ex:
-                            print(f"Error procesando el mensaje de respuesta: {ex}")
-                time.sleep(0.1)
+                mac, data = ESPNowConfig.recibir_mensaje(e, 1)  # Esperar 1 segundo
+                if data and data.get("respuesta") == "canal_correcto":
+                    print(f"Canal correcto encontrado: {canal}")
+                    if ESPNowConfig.verificar_canal(e, peer_mac, key, iv):
+                        print("Canal verificado correctamente.")
+                        return
+                    else:
+                        print("Verificación fallida, reiniciando...")
+                        machine.reset()
             except Exception as ex:
                 print(f"Error al intentar en el canal {canal}: {ex}")
                 continue
@@ -120,18 +130,9 @@ class ESPNowConfig:
                 e.send(peer_mac, mensaje_cifrado)
                 print("Enviando mensaje de verificación...")
 
-                start_time = time.time()
-                while time.time() - start_time < 2:  # Esperar 2 segundos por una respuesta de verificación
-                    mac, msg = e.irecv(0)
-                    if mac and msg:
-                        try:
-                            data = json.loads(msg)
-                            if data.get("respuesta") == "verificacion_exitosa":
-                                return True  # Verificación exitosa
-                        except json.JSONDecodeError:
-                            print("Error decodificando el mensaje JSON.")
-                        except Exception as ex:
-                            print(f"Error procesando el mensaje de verificación: {ex}")
+                mac, data = ESPNowConfig.recibir_mensaje(e, 2)  # Esperar 2 segundos
+                if data and data.get("respuesta") == "verificacion_exitosa":
+                    return True  # Verificación exitosa
             else:
                 print("Error cifrando el mensaje de verificación.")
         except Exception as ex:
