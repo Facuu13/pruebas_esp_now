@@ -93,10 +93,8 @@ class WiFiManager:
         Sincroniza la hora del RTC desde el archivo JSON (modo AP).
         """
         try:
-            with open('config/config_hora_ap.json', 'r') as f:
-                config = json.load(f)
             rtc = machine.RTC()
-            rtc.datetime((config['year'], config['month'], config['day'], 0, config['hour'], config['minute'], config['second'], 0))
+            rtc.datetime((self.config['year'], self.config['month'], self.config['day'], 0, self.config['hour'], self.config['minute'], self.config['second'], 0))
             print("RTC configurado desde archivo JSON")
         except Exception as e:
             print("Error al configurar RTC desde archivo JSON:", e)
