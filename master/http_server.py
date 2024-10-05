@@ -69,7 +69,8 @@ def handle_update_config(cl, request_lines):
         # Validar los campos
         campos_requeridos = [
             "mode", "ssid", "password", "ap_ssid", "ap_password", 
-            "cliente_id", "mqtt_broker", "mqtt_user", "mqtt_pass", "puerto"
+            "cliente_id", "mqtt_broker", "mqtt_user", "mqtt_pass", "puerto",
+            "year","month", "day", "hour", "minute"
         ]
         
         for campo in campos_requeridos:

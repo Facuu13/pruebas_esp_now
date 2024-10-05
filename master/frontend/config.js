@@ -3,11 +3,23 @@ function cargarConfiguracionActual() {
     fetch('/get_config')
         .then(response => response.json())
         .then(data => {
-            // Usar un bucle para asignar valores
-            const fields = ['mode', 'ssid', 'password', 'ap_ssid', 'ap_password', 'cliente_id', 'mqtt_broker', 'mqtt_user', 'mqtt_pass', 'puerto'];
-            fields.forEach(field => {
-                document.getElementById(field).value = data[field];
-            });
+            document.getElementById('mode').value = data['mode'];
+            document.getElementById('ssid').value = data['ssid'];
+            document.getElementById('password').value = data['password'];
+            document.getElementById('ap_ssid').value = data['ap_ssid'];
+            document.getElementById('ap_password').value = data['ap_password'];
+            document.getElementById('cliente_id').value = data['cliente_id'];
+            document.getElementById('mqtt_broker').value = data['mqtt_broker'];
+            document.getElementById('mqtt_user').value = data['mqtt_user'];
+            document.getElementById('mqtt_pass').value = data['mqtt_pass'];
+            document.getElementById('puerto').value = data['puerto'];
+
+            // Combina los valores de fecha y hora
+            document.getElementById('fecha').value = `${data['year']}-${String(data['month']).padStart(2, '0')}-${String(data['day']).padStart(2, '0')}`;
+            document.getElementById('hora').value = `${String(data['hour']).padStart(2, '0')}:${String(data['minute']).padStart(2, '0')}`;
+
+            // Llama a la función para verificar el modo
+            verificarModo(data['mode']);
         })
         .catch(error => {
             console.error('Error al cargar la configuración actual:', error);
@@ -17,6 +29,27 @@ function cargarConfiguracionActual() {
 // Función para manejar el envío del formulario
 document.getElementById('config-form').addEventListener('submit', function(event) {
     event.preventDefault(); // Evita el comportamiento por defecto del formulario
+
+    // Validar que los campos de fecha y hora no estén vacíos si no están deshabilitados
+    if (!document.getElementById('fecha').disabled && !document.getElementById('hora').disabled) {
+        if (!document.getElementById('fecha').value || !document.getElementById('hora').value) {
+            alert('Por favor, completa los campos de fecha y hora.');
+            return;
+        }
+    }
+
+    // Extraemos los valores de fecha y hora
+    const year = parseInt(document.getElementById('fecha').value.split('-')[0]);
+    const month = parseInt(document.getElementById('fecha').value.split('-')[1]);
+    const day = parseInt(document.getElementById('fecha').value.split('-')[2]);
+    const hour = parseInt(document.getElementById('hora').value.split(':')[0]);
+    const minute = parseInt(document.getElementById('hora').value.split(':')[1]);
+
+    // Validar que la fecha y la hora sean válidas
+    if (year < 2020 || month > 12 || day > 31 || hour > 23 || minute > 59) {
+        alert('Por favor, ingresa una fecha y hora válidas.');
+        return;
+    }
 
     const config = {
         mode: document.getElementById('mode').value,
@@ -28,7 +61,15 @@ document.getElementById('config-form').addEventListener('submit', function(event
         mqtt_broker: document.getElementById('mqtt_broker').value,
         mqtt_user: document.getElementById('mqtt_user').value,
         mqtt_pass: document.getElementById('mqtt_pass').value,
-        puerto: parseInt(document.getElementById('puerto').value)
+        puerto: parseInt(document.getElementById('puerto').value),
+
+        // Asignar fecha y hora solo si no están deshabilitados
+        year: !document.getElementById('fecha').disabled ? year : undefined,
+        month: !document.getElementById('fecha').disabled ? month : undefined,
+        day: !document.getElementById('fecha').disabled ? day : undefined,
+        hour: !document.getElementById('hora').disabled ? hour : undefined,
+        minute: !document.getElementById('hora').disabled ? minute : undefined,
+        second: 0
     };
 
     // Validaciones básicas
@@ -50,12 +91,13 @@ document.getElementById('config-form').addEventListener('submit', function(event
     })
     .then(response => response.json())
     .then(data => {
+
         const msg = document.getElementById('response-msg');
         msg.style.color = data.status === 'success' ? 'green' : 'red';
         msg.textContent = data.status === 'success' ? 'Configuración actualizada exitosamente.' : `Error al actualizar la configuración: ${data.message}`;
         msg.style.display = 'block';
 
-        // Opcional: reiniciar la página después de un breve retraso
+        // Opcional: reiniciar la página después de un breve retraso si la actualización fue exitosa
         if (data.status === 'success') {
             setTimeout(() => {
                 location.reload();
@@ -64,11 +106,31 @@ document.getElementById('config-form').addEventListener('submit', function(event
     })
     .catch(error => {
         console.error('Error al enviar la configuración:', error);
+
         const msg = document.getElementById('response-msg');
         msg.style.color = 'red';
         msg.textContent = 'Error al enviar la configuración.';
         msg.style.display = 'block';
     });
+});
+
+// Función para verificar el modo y deshabilitar/permitir los campos de fecha y hora
+function verificarModo(mode) {
+    const fechaField = document.getElementById('fecha');
+    const horaField = document.getElementById('hora');
+
+    if (mode === 'CL') {
+        fechaField.disabled = true;
+        horaField.disabled = true;
+    } else {
+        fechaField.disabled = false;
+        horaField.disabled = false;
+    }
+}
+
+// Detectar cambio de modo en el formulario y ajustar la interfaz
+document.getElementById('mode').addEventListener('change', function() {
+    verificarModo(this.value);
 });
 
 // Ejecutar las funciones al cargar la página
