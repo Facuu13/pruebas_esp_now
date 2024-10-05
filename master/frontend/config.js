@@ -17,6 +17,9 @@ function cargarConfiguracionActual() {
             // Combina los valores de fecha y hora
             document.getElementById('fecha').value = `${data['year']}-${String(data['month']).padStart(2, '0')}-${String(data['day']).padStart(2, '0')}`;
             document.getElementById('hora').value = `${String(data['hour']).padStart(2, '0')}:${String(data['minute']).padStart(2, '0')}`;
+
+            // Llama a la función para verificar el modo
+            verificarModo(data['mode']);
         })
         .catch(error => {
             console.error('Error al cargar la configuración actual:', error);
@@ -27,10 +30,12 @@ function cargarConfiguracionActual() {
 document.getElementById('config-form').addEventListener('submit', function(event) {
     event.preventDefault(); // Evita el comportamiento por defecto del formulario
 
-    // Validar que los campos de fecha y hora no estén vacíos
-    if (!document.getElementById('fecha').value || !document.getElementById('hora').value) {
-        alert('Por favor, completa los campos de fecha y hora.');
-        return;
+    // Validar que los campos de fecha y hora no estén vacíos si no están deshabilitados
+    if (!document.getElementById('fecha').disabled && !document.getElementById('hora').disabled) {
+        if (!document.getElementById('fecha').value || !document.getElementById('hora').value) {
+            alert('Por favor, completa los campos de fecha y hora.');
+            return;
+        }
     }
 
     // Extraemos los valores de fecha y hora
@@ -58,13 +63,13 @@ document.getElementById('config-form').addEventListener('submit', function(event
         mqtt_pass: document.getElementById('mqtt_pass').value,
         puerto: parseInt(document.getElementById('puerto').value),
 
-        // Asignar fecha y hora
-        year: year,
-        month: month,
-        day: day,
-        hour: hour,
-        minute: minute,
-        second: 0 // Establecemos siempre en 0 si no es necesario manipularlo
+        // Asignar fecha y hora solo si no están deshabilitados
+        year: !document.getElementById('fecha').disabled ? year : undefined,
+        month: !document.getElementById('fecha').disabled ? month : undefined,
+        day: !document.getElementById('fecha').disabled ? day : undefined,
+        hour: !document.getElementById('hora').disabled ? hour : undefined,
+        minute: !document.getElementById('hora').disabled ? minute : undefined,
+        second: 0
     };
 
     // Validaciones básicas
@@ -112,6 +117,25 @@ document.getElementById('config-form').addEventListener('submit', function(event
         msg.textContent = 'Error al enviar la configuración.';
         msg.style.display = 'block';
     });
+});
+
+// Función para verificar el modo y deshabilitar/permitir los campos de fecha y hora
+function verificarModo(mode) {
+    const fechaField = document.getElementById('fecha');
+    const horaField = document.getElementById('hora');
+
+    if (mode === 'CL') {
+        fechaField.disabled = true;
+        horaField.disabled = true;
+    } else {
+        fechaField.disabled = false;
+        horaField.disabled = false;
+    }
+}
+
+// Detectar cambio de modo en el formulario y ajustar la interfaz
+document.getElementById('mode').addEventListener('change', function() {
+    verificarModo(this.value);
 });
 
 // Ejecutar las funciones al cargar la página
