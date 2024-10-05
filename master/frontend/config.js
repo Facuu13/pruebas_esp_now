@@ -81,9 +81,6 @@ document.getElementById('config-form').addEventListener('submit', function(event
         return;
     }
 
-    // Mostrar el spinner de carga
-    document.getElementById('spinner').style.display = 'block';
-
     // Enviar los datos al servidor
     fetch('/update_config', {
         method: 'POST',
@@ -94,7 +91,6 @@ document.getElementById('config-form').addEventListener('submit', function(event
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('spinner').style.display = 'none'; // Ocultar el spinner
 
         const msg = document.getElementById('response-msg');
         msg.style.color = data.status === 'success' ? 'green' : 'red';
@@ -109,7 +105,6 @@ document.getElementById('config-form').addEventListener('submit', function(event
         }
     })
     .catch(error => {
-        document.getElementById('spinner').style.display = 'none'; // Ocultar el spinner
         console.error('Error al enviar la configuración:', error);
 
         const msg = document.getElementById('response-msg');
