@@ -54,6 +54,7 @@ class MessageProcessor:
             data = json.loads(msg)
             topic = data.get("topic")
             value = data.get("value")
+            info = data.get("palabra_clave")
             if topic and value is not None:
                 print("Topic_general:", topic)
                 print("Value:", value)
@@ -78,6 +79,12 @@ class MessageProcessor:
                             acciones[accion](value)  # Llama a la función correspondiente
                     else:
                         print(f"Acción desconocida: {accion}")
+            
+            elif info == "reiniciar":
+                print("reiniciando nodo")
+                import machine
+                machine.reset()
+
             else:
                 print("No se pudo extraer el identificador del topic")
 

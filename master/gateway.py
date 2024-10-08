@@ -24,6 +24,12 @@ def mensaje_callback(topic, msg):
     espnow_manager.send_encrypted_data(data)
     print("Mensaje enviado:", data)
 
+def mensaje_reinicio():
+    data = {
+        "palabra_clave": "reiniciar",
+    }
+    espnow_manager.send_encrypted_data(data)
+    print("Mensaje enviado:", data)
 
 # Inicialización
 wifi_manager = WiFiManager()
@@ -48,6 +54,8 @@ else:
 
 hora_actual=wifi_manager.devolver_hora_actual()
 print(hora_actual)
+
+mensaje_reinicio() #reiniciamos los nodos 
 
 # Pasamos espnow_manager al servidor HTTP
 http_server.set_espnow_manager(espnow_manager)
