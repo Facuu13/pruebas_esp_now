@@ -158,23 +158,6 @@
   }
   
 
-  #logout-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background-color: #f44336; /* Rojo para destacar */
-    color: white;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-#logout-btn:hover {
-    background-color: #d32f2f; /* Rojo más oscuro al pasar el ratón */
-}
 
 #main-page {
     position: relative; /* Necesario para que el botón se posicione correctamente */
@@ -208,7 +191,31 @@
   }
 }
 
-/* .mi-clase {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-} */
+.buttons {
+  padding: 10px 20px;
+  background-color: #f44336; /* Rojo para destacar */
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-left: 10px; /* Espacio entre los botones */
+}
+
+.buttons:hover {
+  background-color: #d32f2f; /* Rojo más oscuro al pasar el ratón */
+}
+
+#config-btn, #logout-btn {
+  position: absolute;
+  top: 20px;
+}
+
+#config-btn {
+  right: 170px; /* Ajusta la posición para que esté junto al botón de logout */
+}
+
+#logout-btn {
+  right: 20px;
+}
