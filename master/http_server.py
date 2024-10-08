@@ -65,34 +65,45 @@ def handle_update_config(cl, request_lines):
         # Leer el cuerpo de la solicitud
         body = request_lines[-1]
         data = json.loads(body)
-        
-        # Validar los campos
-        campos_requeridos = [
-            "mode", "ssid", "password", "ap_ssid", "ap_password", 
-            "cliente_id", "mqtt_broker", "mqtt_user", "mqtt_pass", "puerto",
-            "year","month", "day", "hour", "minute"
-        ]
-        
-        for campo in campos_requeridos:
+
+        # Validación de campos y tipos
+        campos_requeridos = {
+            "mode": str,
+            "ssid": str,
+            "password": str,
+            "ap_ssid": str,
+            "ap_password": str,
+            "cliente_id": str,
+            "mqtt_broker": str,
+            "mqtt_user": str,
+            "mqtt_pass": str,
+            "puerto": int,
+            "year": (int, type(None)),  # Permitir NULL o int
+            "month": (int, type(None)), # Permitir NULL o int
+            "day": (int, type(None)),   # Permitir NULL o int
+            "hour": (int, type(None)),  # Permitir NULL o int
+            "minute": (int, type(None)) # Permitir NULL o int
+        }
+
+        # Comprobar que todos los campos requeridos están presentes y tienen el tipo correcto
+        for campo, tipo in campos_requeridos.items():
             if campo not in data:
                 raise ValueError(f"Falta el campo '{campo}'")
+            if not isinstance(data[campo], tipo):
+                raise TypeError(f"El campo '{campo}' debe ser de tipo {tipo[0].__name__} o {tipo[1].__name__}")
         
-        # Validar 'mode'
+        # Validar el valor de 'mode'
         if data['mode'] not in ["CL", "AP"]:
             raise ValueError("El campo 'mode' solo puede ser 'CL' o 'AP'")
-        
-        # Validar 'puerto'
-        if not isinstance(data['puerto'], int):
-            raise ValueError("El campo 'puerto' debe ser un número entero")
         
         # Leer la configuración actual
         with open('config/config.json', 'r') as f:
             config = json.load(f)
-        
-        # Actualizar los campos
+
+        # Actualizar los campos en la configuración
         for campo in campos_requeridos:
             config[campo] = data[campo]
-        
+
         # Guardar la nueva configuración
         with open('config/config.json', 'w') as f:
             json.dump(config, f)
@@ -102,13 +113,17 @@ def handle_update_config(cl, request_lines):
         
         # Reiniciar el dispositivo para aplicar la nueva configuración
         machine.reset()
-        
-    except Exception as e:
-        print('Error actualizando configuración:', e)
+
+    except (ValueError, TypeError) as e:
+        print(f"Error en los datos de configuración: {e}")
         response = {'status': 'error', 'message': str(e)}
-    
-    response_body = json.dumps(response)
-    cl.send(b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + response_body.encode())
+    except Exception as e:
+        print(f"Error general actualizando configuración: {e}")
+        response = {'status': 'error', 'message': 'Error interno'}
+    finally:
+        # Responder al cliente en cualquier caso
+        response_body = json.dumps(response)
+        cl.send(b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + response_body.encode())
 
 
 def handle_root():
