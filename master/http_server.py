@@ -151,13 +151,28 @@ def handle_data():
 
 def handle_static_file(path):
     try:
-        with open(path, 'r') as f:
+        with open(path, 'rb') as f:  # Abrimos en modo binario
             content = f.read()
-        content_type = 'text/css' if path.endswith('.css') else 'text/plain'
-        return f"HTTP/1.1 200 OK\r\nContent-Type: {content_type}\r\n\r\n{content}".encode()
+
+        # Determinamos el tipo de contenido según la extensión del archivo
+        if path.endswith('.css'):
+            content_type = 'text/css'
+        elif path.endswith('.js'):
+            content_type = 'application/javascript'
+        elif path.endswith('.html'):
+            content_type = 'text/html'
+        elif path.endswith('.png'):
+            content_type = 'image/png'
+        elif path.endswith('.jpg') or path.endswith('.jpeg'):
+            content_type = 'image/jpeg'
+        else:
+            content_type = 'application/octet-stream'  # Tipo por defecto para otros archivos
+
+        return f"HTTP/1.1 200 OK\r\nContent-Type: {content_type}\r\n\r\n".encode() + content
     except Exception as e:
         print(f"Error al leer {path}: {e}")
         return b"HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nNot Found"
+
 
 def handle_client(cl):
     try:

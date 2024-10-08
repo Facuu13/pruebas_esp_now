@@ -64,20 +64,30 @@ http_server.set_espnow_manager(espnow_manager)
 http_server.start_server()
 
 
+while True:
+    try:
+        if modo == 'CL' and conectado_a_internet:
+            mqtt_manager.check_msg()  # Revisa si hay mensajes nuevos
+        time.sleep(1)  # Espera un poco antes de la siguiente verificación
+    except Exception as e:
+        print(f"Error al recibir mensajes: {e}")
 
-async def mqtt_loop():
-    while True:
-        mqtt_manager.check_msg()  # Revisa si hay mensajes nuevos
-        await asyncio.sleep(1)    # Espera sin bloquear otras tareas
 
-async def main():
 
-    # Si estás en modo CL, también ejecuta el loop MQTT en paralelo
-    if modo == 'CL' and conectado_a_internet:
-        asyncio.create_task(mqtt_loop())
+# async def mqtt_loop():
+#     while True:
+#         mqtt_manager.check_msg()  # Revisa si hay mensajes nuevos
+#         await asyncio.sleep(1)    # Espera sin bloquear otras tareas
 
-    while True:
-        await asyncio.sleep(1)  # Mantiene el loop principal activo
+# async def main():
 
-# Ejecuta el loop principal de asyncio
-asyncio.run(main())
+#     # Si estás en modo CL, también ejecuta el loop MQTT en paralelo
+#     if modo == 'CL' and conectado_a_internet:
+#         asyncio.create_task(mqtt_loop())
+
+#     while True:
+#         await asyncio.sleep(1)  # Mantiene el loop principal activo
+
+# # Ejecuta el loop principal de asyncio
+# asyncio.run(main())
+
