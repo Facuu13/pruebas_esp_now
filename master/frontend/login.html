@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Wentux</title>
+    <link rel="stylesheet" href="frontend/styles.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sección de Login -->
+    <section id="login-section" class="form-login">
+        <h5>Login</h5>
+        <input id="username" class="controls" type="text" placeholder="Usuario">
+        <input id="password" class="controls" type="password" placeholder="Contraseña">
+        <!-- Checkbox para mostrar/ocultar la contraseña -->
+        <label class="toggle-label">
+            <input type="checkbox" id="toggle-password"> Mostrar contraseña
+        </label>
+        <input id="login-btn" class="buttons" type="submit" value="Ingresar">
+        <p id="error-msg" style="color:red;display:none;">Usuario o contraseña incorrectos.</p>
+    </section>
+
+    <script src="frontend/login.js"></script>
+</body>
+</html>
