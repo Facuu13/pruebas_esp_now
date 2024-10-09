@@ -126,6 +126,15 @@ def handle_update_config(cl, request_lines):
         cl.send(b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + response_body.encode())
 
 
+def handle_login():
+    try:
+        with open('frontend/login.html', 'r') as f:
+            content = f.read()
+        return f"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n{content}".encode()
+    except Exception as e:
+        print(f"Error al leer index.html: {e}")
+        return b"HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nError interno del servidor"
+
 def handle_root():
     try:
         with open('frontend/index.html', 'r') as f:
@@ -198,7 +207,9 @@ def handle_client(cl):
 
         if method == b'GET':
             if path == b'/':
-                response = handle_root()
+                response = handle_login()
+            elif path == b'/home':  # Ruta para la página de home
+                response = handle_root() 
             elif path == b'/config':  # Ruta para la página de configuración
                 response = handle_config()
             elif path == b'/get_config':  # Ruta para obtener la configuración actual
