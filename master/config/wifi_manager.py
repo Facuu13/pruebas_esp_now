@@ -139,5 +139,5 @@ class WiFiManager:
         # x es dia de la semana, que no se usa
         rtc = machine.RTC()
         anio, mes, dia,x, hora, minuto, segundo, *_ = rtc.datetime()
-        hora_actual = f"Hora actual: {dia}/{mes}/{anio} {hora}:{minuto}:{segundo}"
+        hora_actual = f"{dia}/{mes}/{anio} {hora}:{minuto}:{segundo}"
         return hora_actual
