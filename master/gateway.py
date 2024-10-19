@@ -53,7 +53,7 @@ else:
     espnow_manager = ESPNowManager(peer_mac, mensaje_clave,'AP',wifi_manager)
 
 hora_actual=wifi_manager.devolver_hora_actual()
-print(hora_actual)
+print(f"Fecha y hora: {hora_actual}")
 
 mensaje_reinicio() #reiniciamos los nodos 
 

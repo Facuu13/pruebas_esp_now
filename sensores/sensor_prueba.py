@@ -13,7 +13,7 @@ class SensorPrueba(SensorBase):
         """
         Enviar datos del sensor cifrados.
         """
-        value = str(dato) + " ppm"
+        value = str(dato) + " %"
         data = {
             "topic": "sensor/prueba",
             "value": value,
