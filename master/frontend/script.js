@@ -27,7 +27,7 @@ function cargarDatos() {
                 if (topic.includes("sensor/rele/state")) {
                     const card = `
                         <div class="sensor-card">
-                            <p><strong>Sensor: ${mac.split("/")[0]}</strong></p>
+                            <p><strong>Nodo: ${mac.split("/")[0]}</strong></p>
                             <p>Topic: ${topic}</p>
                             <label class="switch">
                                 <input type="checkbox" ${isChecked} onclick="toggleRelay('${mac}', '${topic}', this)">
@@ -40,7 +40,7 @@ function cargarDatos() {
                     // Para otros tipos de sensores, simplemente mostrar el valor
                     const card = `
                         <div class="sensor-card">
-                            <p><strong>Sensor: ${mac.split("/")[0]}</strong></p>
+                            <p><strong>Nodo: ${mac.split("/")[0]}</strong></p>
                             <p>Topic: ${topic}</p>
                             <p><span class="sensor-value">Valor: ${value}</span></p>
                             <p><span class="timestamp">Última Medición: ${hora}</span></p>
