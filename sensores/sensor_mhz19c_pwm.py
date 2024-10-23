@@ -34,11 +34,9 @@ class SensorMHZ19PWM(SensorBase):
         co2_concentration = self.read_co2_pwm()
         if co2_concentration is not None:
 
-            value = str(co2_concentration) + " ppm"
-
             data = {
                 "topic": "sensor/co2",
-                "value": value,
+                "value": co2_concentration,
                 "modelo": modelo
             }
             self.send_encrypted_data(data)

@@ -39,11 +39,10 @@ class SensorHTU21(SensorBase):
         temp = self.temperature()
         if hum and temp is not None:
 
-            hum_value = str(hum) + " %"
 
             data = {
                 "topic": "sensor/hum",
-                "value": hum_value,
+                "value": hum,
                 "modelo": modelo
             }
             self.send_encrypted_data(data)
@@ -51,12 +50,10 @@ class SensorHTU21(SensorBase):
 
             
             time.sleep(1)
-            
-            temp_value = str(temp) + " C"
 
             data2 = {
                 "topic": "sensor/temp",
-                "value": temp_value,
+                "value": temp,
                 "modelo": modelo
             }
             self.send_encrypted_data(data2)

@@ -21,7 +21,6 @@ function cargarDatos() {
             sensors.forEach((sensor) => {
                 const [mac, topic, value, modelo, hora] = sensor.split("\n");
                 let isChecked = value.includes("True") ? "checked" : "";
-                const timestamp = new Date().toLocaleString(); // Generar el timestamp
 
                 // Crear switch para sensor/rele/state
                 if (topic.includes("sensor/rele/state")) {
@@ -37,12 +36,22 @@ function cargarDatos() {
                         </div>`;
                     releDataContainer.innerHTML += card;
                 } else {
-                    // Para otros tipos de sensores, simplemente mostrar el valor
+                    // Determinar unidad según el topic
+                    let unidad = '';
+                    if (topic.includes('sensor/temp')) {
+                        unidad = '°C';
+                    } else if (topic.includes('sensor/hum')) {
+                        unidad = '%';
+                    } else if (topic.includes('sensor/co2')) {
+                        unidad = 'ppm';
+                    }
+
+                    // Para otros tipos de sensores, mostrar el valor con la unidad correspondiente
                     const card = `
                         <div class="sensor-card">
                             <p><strong>Nodo: ${mac.split("/")[0]}</strong></p>
                             <p>Topic: ${topic}</p>
-                            <p><span class="sensor-value">Valor: ${value}</span></p>
+                            <p><span class="sensor-value">Valor: ${value} ${unidad}</span></p>
                             <p><span class="timestamp">Última Medición: ${hora}</span></p>
                             <p><span class="modelo">Modelo sensor: ${modelo}</span></p>
                         </div>`;
@@ -52,6 +61,7 @@ function cargarDatos() {
         })
         .catch(error => console.error('Error al cargar los datos:', error));
 }
+
 
 // Función para cambiar el estado del relé
 function toggleRelay(mac, topic, element) {
