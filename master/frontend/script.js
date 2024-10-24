@@ -91,6 +91,7 @@ function checkAuthentication() {
     if (!username || !password) {
         // Redirigir a la página de login si no hay usuario y contraseña en localStorage
         window.location.href = '/';
+        window.alert("No tiene autorizacion para ingresar a esta pantalla")
     }
 }
 

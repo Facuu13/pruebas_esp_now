@@ -122,6 +122,7 @@ function verificarSesion() {
     } else {
         // Redirigir a la pantalla de login si no hay sesión
         window.location.href = '/';
+        window.alert("No tiene autorizacion para ingresar a esta pantalla")
     }
 }
 
