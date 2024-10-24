@@ -1,4 +1,3 @@
-// Función para manejar la carga de datos de sensores
 function cargarDatos() {
     console.log('Cargando datos...'); // Para verificar si se llama la función
 
@@ -11,12 +10,22 @@ function cargarDatos() {
         })
         .then(data => {
             const sensorDataContainer = document.getElementById("sensor-data");
-            sensorDataContainer.innerHTML = ""; // Limpiar contenido previo
-
             const releDataContainer = document.getElementById("rele-data");
+
+            sensorDataContainer.innerHTML = ""; // Limpiar contenido previo
             releDataContainer.innerHTML = ""; // Limpiar contenido previo
 
+            // Si no hay datos recibidos, mostrar mensajes de "no hay datos"
+            if (!data.trim()) {
+                sensorDataContainer.innerHTML = "<p>No hay sensores cargados.</p>";
+                releDataContainer.innerHTML = "<p>No hay relés cargados.</p>";
+                return; // Salir de la función
+            }
+
             const sensors = data.trim().split("\n\n"); // Separar cada conjunto de datos
+
+            let sensorCount = 0;
+            let releCount = 0;
 
             sensors.forEach((sensor) => {
                 const [mac, topic, value, modelo, hora] = sensor.split("\n");
@@ -35,6 +44,7 @@ function cargarDatos() {
                             <p><span class="timestamp">Último Estado: ${hora}</span></p>
                         </div>`;
                     releDataContainer.innerHTML += card;
+                    releCount++;
                 } else {
                     // Determinar unidad según el topic
                     let unidad = '';
@@ -46,7 +56,6 @@ function cargarDatos() {
                         unidad = 'ppm';
                     }
 
-                    // Para otros tipos de sensores, mostrar el valor con la unidad correspondiente
                     const card = `
                         <div class="sensor-card">
                             <p><strong>Nodo: ${mac.split("/")[0]}</strong></p>
@@ -56,11 +65,23 @@ function cargarDatos() {
                             <p><span class="modelo">Modelo sensor: ${modelo}</span></p>
                         </div>`;
                     sensorDataContainer.innerHTML += card;
+                    sensorCount++;
                 }
             });
+
+            // Mostrar mensaje si no hay sensores cargados
+            if (sensorCount === 0) {
+                sensorDataContainer.innerHTML = "<p>No hay sensores cargados.</p>";
+            }
+
+            // Mostrar mensaje si no hay relés cargados
+            if (releCount === 0) {
+                releDataContainer.innerHTML = "<p>No hay relés cargados.</p>";
+            }
         })
         .catch(error => console.error('Error al cargar los datos:', error));
 }
+
 
 // Función para verificar si el usuario está autenticado
 function checkAuthentication() {
