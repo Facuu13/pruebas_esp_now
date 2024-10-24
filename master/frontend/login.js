@@ -6,6 +6,9 @@ function handleLogin() {
         const password = document.getElementById('password').value;
 
         if (username === 'facu' && password === 'wentux') {
+            // Guardar el usuario y la contraseña en localStorage
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
             // Redirigir a la página principal
             window.location.href = '/home';
         } else {
@@ -21,11 +24,7 @@ function togglePasswordVisibility() {
     const toggleCheckbox = document.getElementById('toggle-password');
 
     toggleCheckbox.addEventListener('change', function() {
-        if (this.checked) {
-            passwordField.type = 'text'; // Mostrar contraseña
-        } else {
-            passwordField.type = 'password'; // Ocultar contraseña
-        }
+        passwordField.type = this.checked ? 'text' : 'password'; // Alternar visibilidad
     });
 }
 

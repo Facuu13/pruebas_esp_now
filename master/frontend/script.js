@@ -62,6 +62,16 @@ function cargarDatos() {
         .catch(error => console.error('Error al cargar los datos:', error));
 }
 
+// Función para verificar si el usuario está autenticado
+function checkAuthentication() {
+    const username = localStorage.getItem('username');
+    const password = localStorage.getItem('password');
+
+    if (!username || !password) {
+        // Redirigir a la página de login si no hay usuario y contraseña en localStorage
+        window.location.href = '/';
+    }
+}
 
 // Función para cambiar el estado del relé
 function toggleRelay(mac, topic, element) {
@@ -99,10 +109,16 @@ function toggleRelay(mac, topic, element) {
 function handleLogout() {
     const logoutButton = document.getElementById('logout-btn');
     logoutButton.addEventListener('click', function() {
+        // Eliminar usuario y contraseña del localStorage
+        localStorage.removeItem('username');
+        localStorage.removeItem('password');
         // Redirigir a la página de login
         window.location.href = '/';
     });
 }
+
+// Verificar autenticación al cargar la página
+checkAuthentication();
 
 // Ejecutar la función de cargar datos después de iniciar sesión correctamente
 cargarDatos();

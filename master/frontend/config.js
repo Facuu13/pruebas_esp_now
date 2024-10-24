@@ -111,7 +111,21 @@ document.getElementById('mode').addEventListener('change', function() {
     verificarModo(this.value);
 });
 
+// Verificar si el usuario está logueado antes de cargar la configuración
+function verificarSesion() {
+    const username = localStorage.getItem('username');
+    const password = localStorage.getItem('password');
+
+    if (username && password) {
+        // Continuar con la carga de la página
+        cargarConfiguracionActual();
+    } else {
+        // Redirigir a la pantalla de login si no hay sesión
+        window.location.href = '/';
+    }
+}
+
 // Ejecutar las funciones al cargar la página
 window.onload = function() {
-    cargarConfiguracionActual();
+    verificarSesion();
 };
