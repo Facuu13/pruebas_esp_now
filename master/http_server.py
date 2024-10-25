@@ -110,6 +110,14 @@ def handle_update_config(cl, request_lines):
         
         # Responder al cliente
         response = {'status': 'success'}
+
+        # Si espnow_manager está disponible, enviamos mensaje de reincio
+        if espnow_manager:
+            data = {
+                "palabra_clave": "reiniciar",
+            }
+            espnow_manager.send_encrypted_data(data)
+            print(f"Enviado por ESP-NOW: {data}")
         
         # Reiniciar el dispositivo para aplicar la nueva configuración
         machine.reset()
