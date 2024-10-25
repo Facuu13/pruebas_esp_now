@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wentux</title>
     <link rel="stylesheet" href="frontend/styles.css">
+    <link rel="manifest" href="/frontend/manifest.json">
 </head>
 <body>
     <!-- Sección Principal -->
@@ -23,6 +24,15 @@
         <!-- Botón para cerrar sesión -->
         <button id="logout-btn" class="buttons">Cerrar Sesión</button>
     </div>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker
+            .register("/frontend/service-worker.js")
+            .then(() => console.log("Service Worker registrado correctamente."))
+            .catch((error) => console.error("Registro de Service Worker fallido:", error));
+        }
+    </script>
 
     <script src="frontend/script.js"></script>
 </body>
