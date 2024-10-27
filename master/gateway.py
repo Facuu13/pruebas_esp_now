@@ -5,9 +5,6 @@ from config.wifi_manager import WiFiManager
 from config.mqtt_manager import MQTTManager
 import http_server 
 
-import uasyncio as asyncio
-
-
 peer_mac = b'\xff' * 6
 mensaje_clave = json.dumps({"respuesta": "canal_correcto"})
 topic_prueba = b'/sensor/#'
