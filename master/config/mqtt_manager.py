@@ -18,7 +18,7 @@ class MQTTManager:
     
     def conectar_mqtt(self):
         cliente = MQTTClient(self.cliente_id, self.mqtt_broker, port=self.puerto, user=self.mqtt_user, password=self.mqtt_pass, ssl=True, ssl_params={'key': self.client_key, 'cert': self.client_cert})
-        max_intentos = 3  # Reducimos el número de intentos para evitar agotar la memoria
+        max_intentos = 3
         intentos = 0
         while intentos < max_intentos:
             try:
@@ -26,11 +26,11 @@ class MQTTManager:
                 print("Conectado al broker MQTT con TLS")
                 return cliente
             except OSError as e:
-                if e.args[0] == 104:  # Posible error de conexión
+                if e.args[0] == 104:
                     print(f"Error: no se pudo conectar al broker {self.mqtt_broker}. Verifique la dirección y el puerto.")
-                elif e.args[0] == 113:  # No se puede acceder al host
+                elif e.args[0] == 113:
                     print(f"Error: broker {self.mqtt_broker} no disponible.")
-                elif e.args[0] == 12:  # Error de memoria
+                elif e.args[0] == 12:
                     print("Error: memoria insuficiente. Reduzca el número de intentos o revise la memoria disponible.")
                     break
                 else:
@@ -38,17 +38,19 @@ class MQTTManager:
             except Exception as e:
                 if str(e) == '5':
                     print("Error de autenticación en el broker MQTT: usuario o contraseña incorrectos.")
-                    break  # Evitamos seguir intentando si hay un error de autenticación
+                    break
                 elif "certificate" in str(e).lower():
                     print("Error en la certificación TLS: Verifique los certificados o las claves.")
                 else:
                     print(f"Error desconocido al conectar al broker MQTT: {e}")
-                    
+
             intentos += 1
             print(f"Intento {intentos}/{max_intentos}")
             time.sleep(5)
 
-        raise RuntimeError(f"No se pudo conectar al broker MQTT después de {intentos} intentos")
+        print(f"No se pudo conectar al broker MQTT después de {intentos} intentos. Continuando sin conexión MQTT.")
+        return None 
+
 
     def set_callback(self, callback):
         self.cliente.set_callback(callback)
