@@ -29,7 +29,7 @@ def mensaje_reinicio():
         "palabra_clave": "reiniciar",
     }
     espnow_manager.send_encrypted_data(data)
-    print("Mensaje enviado:", data)
+    #print("Mensaje enviado:", data)
 
 # Inicialización
 wifi_manager = WiFiManager()
