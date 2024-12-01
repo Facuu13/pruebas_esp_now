@@ -53,3 +53,4 @@ class ModuloReles(SensorBase):
 
 # Instanciar la clase
 reles = ModuloReles()
+reles.send_rele_state()

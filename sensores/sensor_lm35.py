@@ -40,6 +40,5 @@ class SensorLM35(SensorBase):
 # from sensor_lm35 import SensorLM35
 
 sensor = SensorLM35()
-
-# sensor.send_sensor_data()  # Solo llama a send_sensor_data una vez
+sensor.send_sensor_data()  # Solo llama a send_sensor_data una vez
 

@@ -48,4 +48,4 @@ class SensorMHZ19UART(SensorBase):
 
 # from sensor_mhz19c_uart import SensorMHZ19UART
 sensor = SensorMHZ19UART()
-#sensor1.send_sensor_data()
+sensor.send_sensor_data()
